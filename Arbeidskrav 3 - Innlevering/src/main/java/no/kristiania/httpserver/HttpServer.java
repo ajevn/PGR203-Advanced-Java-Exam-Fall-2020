@@ -15,7 +15,7 @@ public class HttpServer {
 
     public HttpServer(int port) throws IOException {
         ServerSocket serverSocket = new ServerSocket(port);
-        System.out.println("Server started at URL: https://localhost:8080");
+        System.out.println("Server started at URL: https://localhost:8080/index.html");
         new Thread(() -> {
             while (true) {
                 try {
@@ -93,10 +93,12 @@ public class HttpServer {
             String sub1 = email.substring(0, indexPos);
             String sub2 = email.substring(indexPos + 2, email.length());
             String emailParsed = sub1 + "@" + sub2;
-            String name = requestParameter.getParameter("name");
-            ProjectMember member = createMember(name, emailParsed);
+
+            String firstName = requestParameter.getParameter("firstName");
+            String lastName = requestParameter.getParameter("lastName");
+            ProjectMember member = createMember(firstName, lastName, emailParsed);
             projectMembers.add(member);
-            System.out.println("Member: " + member.getName() + " - " + member.getEmail() + " added successfully");
+            System.out.println("Member: " + member.getFirstName() + ", " + member.getLastName() + " - " + member.getEmail() + " added successfully");
         }
 
 
@@ -109,14 +111,14 @@ public class HttpServer {
         clientSocket.getOutputStream().write(response.getBytes());
     }
 
-    public ProjectMember createMember(String name, String email){
-        ProjectMember newMember = new ProjectMember(name, email);
+    public ProjectMember createMember(String firstName, String lastName, String email){
+        ProjectMember newMember = new ProjectMember(firstName, lastName, email);
         return newMember;
     }
     private void handleGetProducts(Socket clientSocket) throws IOException {
         String body = "<ul>";
         for (ProjectMember member : projectMembers) {
-            body += "<li>" + "Name: " +  member.getName() + " Email: " + member.getEmail() + "</li>";
+            body += "<li>" + "Name: " +  member.getFirstName() + ", " + member.getLastName() + " Email: " + member.getEmail() + "</li>";
             System.out.println(member);
         }
         body += "</ul>";
