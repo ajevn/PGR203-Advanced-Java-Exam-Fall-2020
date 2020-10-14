@@ -1,0 +1,8 @@
+no/kristiania/httpserver/HttpMessage.class
+no/kristiania/database/ProjectTaskDao.class
+no/kristiania/database/ProjectMemberDao.class
+no/kristiania/httpserver/QueryString.class
+no/kristiania/httpserver/ProjectMember.class
+no/kristiania/httpserver/HttpServer.class
+no/kristiania/httpserver/ProjectTask.class
+no/kristiania/httpserver/HttpClient.class

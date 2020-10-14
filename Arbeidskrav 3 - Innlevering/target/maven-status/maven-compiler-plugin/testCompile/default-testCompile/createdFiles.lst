@@ -1,0 +1,5 @@
+no/kristiania/database/ProjectMemberDaoTest.class
+no/kristiania/httpserver/HttpServerTest.class
+no/kristiania/httpserver/QueryStringTest.class
+no/kristiania/database/ProjectTaskDaoTest.class
+no/kristiania/httpserver/HttpClientTest.class
