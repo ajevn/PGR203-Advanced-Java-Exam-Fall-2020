@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class ProjectMemberDao {
 
@@ -27,22 +26,7 @@ public class ProjectMemberDao {
 
         ProjectMemberDao projectMemberDao = new ProjectMemberDao(dataSource);
 
-        System.out.println("Please enter first name:");
-        Scanner scanner = new Scanner(System.in);
-        String memberFirstName = scanner.nextLine();
-
-        System.out.println("Please enter last name:");
-        String memberLastName = scanner.nextLine();
-
-        System.out.println("Please enter email:");
-        String memberEmail = scanner.nextLine();
-
-
-        ProjectMember member = new ProjectMember(memberFirstName, memberLastName, memberEmail);
-        projectMemberDao.insert(member);
-
-
-        scanner.close();
+        System.out.println(projectMemberDao.list());
     }
 
     public void insert(ProjectMember projectMember) throws SQLException {
@@ -59,24 +43,32 @@ public class ProjectMemberDao {
         }
     }
 
+    private ProjectMember mapRowToMember(ResultSet rs) throws SQLException {
+        ProjectMember projectMember = new ProjectMember();
+        projectMember.setFirstName(rs.getString("member_firstname"));
+        projectMember.setLastName(rs.getString("member_lastname"));
+        projectMember.setEmail(rs.getString("member_email"));
+        return projectMember;
+    }
+
     public List<ProjectMember> list() throws SQLException {
-        List<ProjectMember> members = new ArrayList<>();
+        List<ProjectMember> projectMembers = new ArrayList<>();
+
         try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("select * from project_members")) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM project_members")) {
                 try (ResultSet rs = statement.executeQuery()) {
                     while (rs.next()) {
                         ProjectMember member = new ProjectMember(
-                                (rs.getString("member_firstName")),
-                                (rs.getString("member_lastName")),
+                                (rs.getString("member_firstname")),
+                                (rs.getString("member_lastname")),
                                 (rs.getString("member_email")));
-                        members.add(member);
+                        projectMembers.add(member);
                     }
                 }
             }
         }
-        return members;
+        return projectMembers;
     }
-
     public ProjectMember retrieve(Long id) {
         return null;
     }
