@@ -3,10 +3,7 @@ import no.kristiania.httpserver.ProjectMember;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +23,6 @@ public class ProjectMemberDao {
 
         ProjectMemberDao projectMemberDao = new ProjectMemberDao(dataSource);
 
-        System.out.println(projectMemberDao.list());
     }
 
     public void insert(ProjectMember projectMember) throws SQLException {
@@ -52,22 +48,17 @@ public class ProjectMemberDao {
     }
 
     public List<ProjectMember> list() throws SQLException {
-        List<ProjectMember> projectMembers = new ArrayList<>();
-
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM project_members")) {
                 try (ResultSet rs = statement.executeQuery()) {
+                    List<ProjectMember> projectMembers = new ArrayList<>();
                     while (rs.next()) {
-                        ProjectMember member = new ProjectMember(
-                                (rs.getString("member_firstname")),
-                                (rs.getString("member_lastname")),
-                                (rs.getString("member_email")));
-                        projectMembers.add(member);
+                        projectMembers.add(mapRowToMember(rs));
                     }
+                    return projectMembers;
                 }
             }
         }
-        return projectMembers;
     }
     public ProjectMember retrieve(Long id) {
         return null;

@@ -38,12 +38,5 @@ public class ProjectMember {
         return email;
     }
 
-    @Override
-    public String toString() {
-        return "ProjectMember{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
+
 }

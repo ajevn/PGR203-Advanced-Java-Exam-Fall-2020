@@ -3,6 +3,7 @@ package no.kristiania.httpserver;
 import no.kristiania.database.ProjectMemberDao;
 import org.postgresql.ds.PGSimpleDataSource;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,9 +16,11 @@ import java.util.List;
 public class HttpServer {
 
     private File contentRoot;
+    private ProjectMemberDao projectMemberDao;
     public List<ProjectMember> projectMembers = new ArrayList<>();
 
-    public HttpServer(int port) throws IOException {
+    public HttpServer(int port, DataSource dataSource) throws IOException {
+        projectMemberDao = new ProjectMemberDao(dataSource);
         ServerSocket serverSocket = new ServerSocket(port);
         System.out.println("Server started at URL: https://localhost:8080/index.html");
         new Thread(() -> {
@@ -87,7 +90,7 @@ public class HttpServer {
         }
     }
 
-    private void handlePostRequest(Socket clientSocket, HttpMessage request) throws IOException, SQLException {
+    public void handlePostRequest(Socket clientSocket, HttpMessage request) throws IOException, SQLException {
         QueryString requestParameter = new QueryString(request.getBody());
 
         String email = requestParameter.getParameter("email");
@@ -101,7 +104,7 @@ public class HttpServer {
             String firstName = requestParameter.getParameter("firstName");
             String lastName = requestParameter.getParameter("lastName");
             ProjectMember member = createMember(firstName, lastName, emailParsed);
-            //ProjectMemberDao.insert(firstName, lastName, emailParsed);
+            projectMemberDao.insert(member);
             System.out.println("Member: " + member.getFirstName() + ", " + member.getLastName() + " - " + member.getEmail() + " added successfully");
         }
 
@@ -119,10 +122,11 @@ public class HttpServer {
         ProjectMember newMember = new ProjectMember(firstName, lastName, email);
         return newMember;
     }
-    private void handleGetProducts(Socket clientSocket) throws IOException {
+    private void handleGetProducts(Socket clientSocket) throws IOException, SQLException {
+        List<ProjectMember> memberList = projectMemberDao.list();
         String body = "<ul>";
-        for (ProjectMember member : projectMembers) {
-            body += "<li>" + "Name: " +  member.getFirstName() + ", " + member.getLastName() + " Email: " + member.getEmail() + "</li>";
+        for (ProjectMember member : memberList) {
+            body += "<li>" + "Name: <Strong>" +  member.getFirstName() + ", " + member.getLastName() + "</Strong> Email: <Strong>" + member.getEmail() + "</Strong></li>";
             System.out.println(member);
         }
         body += "</ul>";
@@ -158,13 +162,14 @@ public class HttpServer {
     }
 
     public static void main(String[] args) throws IOException {
+
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         dataSource.setUrl("jdbc:postgresql://localhost:5432/postgres");
         dataSource.setUser("user_db");
         // TODO: database passwords should never be checked in!
         dataSource.setPassword("asdqwe123");
 
-        HttpServer server = new HttpServer(8080);
+        HttpServer server = new HttpServer(8080, dataSource);
         server.setContentRoot(new File("src/main/resources"));
 
     }
