@@ -24,7 +24,7 @@ class ProjectMemberDaoTest {
     }
 
     @Test
-    void shouldListAllMembers() throws SQLException {
+    void shouldListInsertedMember() throws SQLException {
         ProjectMember member1 =  new ProjectMember("Andreas", "jevn", "test@email");
         memberDao.insert(member1);
 
