@@ -1,6 +1,7 @@
 package no.kristiania.httpserver;
 
 import no.kristiania.database.ProjectMemberDao;
+import org.flywaydb.core.Flyway;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,13 +10,16 @@ import javax.sql.DataSource;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 public class HttpServer {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
+    public static final String CONNECTION_CLOSE = "Connection: close\r\n";
     private ProjectMemberDao projectMemberDao;
     public List<ProjectMember> projectMembers = new ArrayList<>();
 
@@ -24,8 +28,7 @@ public class HttpServer {
         ServerSocket serverSocket = new ServerSocket(port);
         new Thread(() -> {
             while (true) {
-                try {
-                    Socket clientSocket = serverSocket.accept();
+                try (Socket clientSocket = serverSocket.accept()){
                     handleRequest(clientSocket);
                 } catch (IOException | SQLException e) {
                     e.printStackTrace();
@@ -69,6 +72,7 @@ public class HttpServer {
                 String body = requestPath + " does not exist";
                 String response = "HTTP/1.1 404 Not Found\r\n" +
                         "Content-Length: " + body.length() + "\r\n" +
+                        CONNECTION_CLOSE +
                         "\r\n" +
                         body;
 
@@ -87,8 +91,8 @@ public class HttpServer {
 
             String response = "HTTP/1.1 200 OK\r\n" +
                     "Content-Length: " + buffer.toByteArray().length + "\r\n" +
-                    "Connection: close\r\n" +
                     "Content-Type: " + contentType + "\r\n" +
+                    CONNECTION_CLOSE +
                     "\r\n";
 
             clientSocket.getOutputStream().write(response.getBytes());
@@ -99,25 +103,25 @@ public class HttpServer {
     public void handlePostRequest(Socket clientSocket, HttpMessage request) throws IOException, SQLException {
         QueryString requestParameter = new QueryString(request.getBody());
 
+        String firstName = requestParameter.getParameter("firstName");
+        String lastName = requestParameter.getParameter("lastName");
         String email = requestParameter.getParameter("email");
-        if(email.contains("%40")){
-            // Splitting submitted email string to replace %40 with @
-            int indexPos = email.indexOf("%");
-            String sub1 = email.substring(0, indexPos);
-            String sub2 = email.substring(indexPos + 2, email.length());
-            String emailParsed = sub1 + "@" + sub2;
 
-            String firstName = requestParameter.getParameter("firstName");
-            String lastName = requestParameter.getParameter("lastName");
-            ProjectMember member = createMember(firstName, lastName, emailParsed);
-            projectMemberDao.insert(member);
-            System.out.println("Member: " + member.getFirstName() + ", " + member.getLastName() + " - " + member.getEmail() + " added successfully");
-        }
+        // Decoding to UTF-8 to allow "æøå, @" and other characters
+        String decodedEmail = URLDecoder.decode(email, "UTF-8");
+        String decodedFirstName = URLDecoder.decode(firstName, "UTF-8");
+        String decodedLastName = URLDecoder.decode(lastName, "UTF-8");
+
+
+        ProjectMember member = createMember(decodedFirstName, decodedLastName, decodedEmail);
+        projectMemberDao.insert(member);
+        System.out.println("Member: " + member.getFirstName() + ", " + member.getLastName() + " - " + member.getEmail() + " added successfully");
 
 
         String body = "Okay";
         String response = "HTTP/1.1 200 OK\r\n" +
                 "Content-Length: " + body.length() + "\r\n" +
+                CONNECTION_CLOSE +
                 "\r\n" +
                 body;
 
@@ -133,13 +137,12 @@ public class HttpServer {
         String body = "<ul>";
         for (ProjectMember member : memberList) {
             body += "<li>" + "Name: <Strong>" +  member.getFirstName() + ", " + member.getLastName() + "</Strong> Email: <Strong>" + member.getEmail() + "</Strong></li>";
-            System.out.println(member);
         }
         body += "</ul>";
         String response = "HTTP/1.1 200 OK\r\n" +
                 "Content-Length: " + body.length() + "\r\n" +
                 "Content-Type: text/html\r\n" +
-                "Connection: close\r\n" +
+                CONNECTION_CLOSE +
                 "\r\n" +
                 body;
 
@@ -161,6 +164,7 @@ public class HttpServer {
         String response = "HTTP/1.1 " + statusCode + " OK\r\n" +
                 "Content-Length: " + body.length() + "\r\n" +
                 "Content-Type: text/plain\r\n" +
+                CONNECTION_CLOSE +
                 "\r\n" +
                 body;
 
@@ -168,12 +172,18 @@ public class HttpServer {
     }
 
     public static void main(String[] args) throws IOException {
+        //TODO -- Code should ensure that *pgr203.properties* file is created with correct properties
+        Properties properties = new Properties();
+        try (FileReader fileReader = new FileReader("./pgr203.properties")) {
+            properties.load(fileReader);
+        }
 
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/postgres");
-        dataSource.setUser("user_db");
-        // TODO: database passwords should never be checked in!
-        dataSource.setPassword("asdqwe123");
+        dataSource.setUrl(properties.getProperty("dataSource.url"));
+        dataSource.setUser(properties.getProperty("dataSource.username"));
+        dataSource.setPassword(properties.getProperty("dataSource.password"));
+        logger.info("Using database {}", dataSource.getUrl());
+        Flyway.configure().dataSource(dataSource).load().migrate();
 
         HttpServer server = new HttpServer(8080, dataSource);
         logger.info("Started on http://localhost:{}/index.html", 8080);
