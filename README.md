@@ -1,4 +1,4 @@
-![Java CI with Maven](https://github.com/kristiania/pgr203innevering3-Kohort-5-1/workflows/Java%20CI%20with%20Maven/badge.svg)
+![Java CI with Maven](https://github.com/kristiania/pgr203innlevering2-Kohort5-1/workflows/Java%20CI%20with%20Maven/badge.svg)
 # pgr203innevering3-Kohort-5-1
 pgr203innevering3-ajevn created by GitHub Classroom
 
@@ -9,4 +9,4 @@ Skal også demonstrere hvordan dataen blir skrevet, lagret i en database og send
 Prosjektet bygges via maven -> lifecycle -> package - SERVER Start Viktig å velge versjonen som ender med shaded.jar da denne er bygget på riktig måte.
 
 Brukeren skal kunne legge til flere brukere via newWorker.html som kjøres via localHost, der de 3 parameterene (firstNamer, lastName, email) blir lagret i ProjectMemberDao og oppdatert til Postgres databasen.
-Postgres databasen lagrer da de dataen den blir tilsendt og skriver de ut i en ProjectMember liste som da hviser et array med de forskjellige medlemene (firstName, lastName, email) på localhost siden.
+Postgres databasen lagrer da de dataen den blir tilsendt og skriver de ut i en ProjectMember liste som da er et array med de forskjellige medlemene (firstName, lastName, email).
