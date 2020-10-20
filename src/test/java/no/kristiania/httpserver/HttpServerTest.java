@@ -55,8 +55,7 @@ class HttpServerTest {
     @Test
     void shouldReturnFileFromDisk() throws IOException {
         HttpServer server = new HttpServer(10005, dataSource);
-        File contentRoot = new File("target/");
-        server.setContentRoot(contentRoot);
+        File contentRoot = new File("target/test-classes");
 
         String fileContent = "Hello World " + new Date();
         Files.writeString(new File(contentRoot, "test.txt").toPath(), fileContent);
@@ -69,8 +68,7 @@ class HttpServerTest {
     @Test
     void shouldReturnCorrectContentType() throws IOException {
         HttpServer server = new HttpServer(10006, dataSource);
-        File contentRoot = new File("target/");
-        server.setContentRoot(contentRoot);
+        File contentRoot = new File("target/test-classes");
 
         Files.writeString(new File(contentRoot, "index.html").toPath(), "<h2>Hello World</h2>");
 
@@ -82,7 +80,6 @@ class HttpServerTest {
     void shouldReturn404IfFileNotFound() throws IOException {
         HttpServer server = new HttpServer(10007, dataSource);
         File contentRoot = new File("target/");
-        server.setContentRoot(contentRoot);
 
         HttpClient client = new HttpClient("localhost", 10007, "/notFound.txt");
         assertEquals(404, client.getStatusCode());
