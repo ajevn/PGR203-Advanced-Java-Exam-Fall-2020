@@ -187,6 +187,7 @@ public class HttpServer {
 
         HttpServer server = new HttpServer(8080, dataSource);
         logger.info("Started on http://localhost:{}/index.html", 8080);
+        System.out.println("testing surefire reports");
     }
 
     public List<ProjectMember> getProjectMembers() {
