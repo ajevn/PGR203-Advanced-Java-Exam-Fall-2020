@@ -10,19 +10,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectTaskDao {
+public class ProjectTaskDao extends AbstractDao<ProjectTask>{
 
     private DataSource dataSource;
 
     public ProjectTaskDao(DataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
-    public static void main(String[] args) throws SQLException {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-
-        ProjectMemberDao projectTaskDao = new ProjectMemberDao(dataSource);
-
+        super(dataSource);
     }
 
     public void insert(ProjectTask projectTask) throws SQLException {
@@ -36,12 +29,12 @@ public class ProjectTaskDao {
             }
         }
     }
-
-    private ProjectTask mapRowToTask(ResultSet rs) throws SQLException {
-        ProjectTask projectTask = new ProjectTask();
-        projectTask.setName(rs.getString("task_name"));
-        projectTask.setStatus(rs.getString("task_status"));
-        return projectTask;
+    @Override
+    protected ProjectTask mapRow(ResultSet rs) throws SQLException {
+        ProjectTask task = new ProjectTask();
+        task.setId(rs.getLong("task_name"));
+        task.setName(rs.getString("task_status"));
+        return task;
     }
 
     public List<ProjectTask> list() throws SQLException {
@@ -50,7 +43,7 @@ public class ProjectTaskDao {
                 try (ResultSet rs = statement.executeQuery()) {
                     List<ProjectTask> projectTasks = new ArrayList<>();
                     while (rs.next()) {
-                        projectTasks.add(mapRowToTask(rs));
+                        projectTasks.add(mapRow(rs));
                     }
                     return projectTasks;
                 }

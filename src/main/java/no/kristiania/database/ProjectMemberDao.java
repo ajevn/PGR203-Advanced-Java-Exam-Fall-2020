@@ -6,19 +6,12 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectMemberDao {
+public class ProjectMemberDao{
 
     private DataSource dataSource;
 
     public ProjectMemberDao(DataSource dataSource) {
         this.dataSource = dataSource;
-    }
-
-    public static void main(String[] args) throws SQLException {
-        PGSimpleDataSource dataSource = new PGSimpleDataSource();
-
-        ProjectMemberDao projectMemberDao = new ProjectMemberDao(dataSource);
-
     }
 
     public void insert(ProjectMember projectMember) throws SQLException {
@@ -55,8 +48,5 @@ public class ProjectMemberDao {
                 }
             }
         }
-    }
-    public ProjectMember retrieve(Long id) {
-        return null;
     }
 }

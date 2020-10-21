@@ -4,14 +4,14 @@ public class ProjectTask {
 
 
         private String name;
-        private String description;
+        private String status;
 
         public ProjectTask() {
         }
 
-        public ProjectTask(String name, String description) {
+        public ProjectTask(String name, String status) {
             this.name = name;
-            this.description = description;
+            this.status = status;
         }
 
     public String getName() {
@@ -22,11 +22,11 @@ public class ProjectTask {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getStatus() {
+        return status;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

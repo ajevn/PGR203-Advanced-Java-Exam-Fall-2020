@@ -2,9 +2,9 @@ package no.kristiania.database;
 
 public class ProjectTask {
 
-
     private String name;
     private String status;
+    private long id;
 
     public ProjectTask() {
     }
@@ -28,5 +28,13 @@ public class ProjectTask {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

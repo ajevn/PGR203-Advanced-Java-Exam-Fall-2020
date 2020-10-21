@@ -1,9 +1,11 @@
 package no.kristiania.database;
 
 public class ProjectMember {
+
     private String firstName;
     private String lastName;
     private String email;
+    private long id;
 
     public ProjectMember() {
     }
@@ -38,5 +40,11 @@ public class ProjectMember {
         return email;
     }
 
+    public long getId() {
+        return id;
+    }
 
+    public void setId(long id) {
+        this.id = id;
+    }
 }

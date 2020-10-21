@@ -2,6 +2,7 @@ package no.kristiania.httpserver;
 
 import no.kristiania.database.ProjectMember;
 import no.kristiania.database.ProjectMemberDao;
+import no.kristiania.database.ProjectTaskDao;
 import org.flywaydb.core.Flyway;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
@@ -14,16 +15,29 @@ import java.net.Socket;
 import java.net.URLDecoder;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 public class HttpServer {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
+
+    private Map<String, HttpController> controllers;
+
     public static final String CONNECTION_CLOSE = "Connection: close\r\n";
     private ProjectMemberDao projectMemberDao;
+    private ServerSocket serverSocket;
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
         projectMemberDao = new ProjectMemberDao(dataSource);
+        ProjectTaskDao projectTaskDao = new ProjectTaskDao(dataSource);
+
+        controllers = Map.of(
+                "/api/newCategory", new ProjectTaskGetController(projectTaskDao),
+                "/api/categories", new ProjectTaskGetController(projectTaskDao)
+        );
+
+
         ServerSocket serverSocket = new ServerSocket(port);
         new Thread(() -> {
             while (true) {
@@ -36,33 +50,45 @@ public class HttpServer {
         }).start();
     }
 
+    public int getPort() {
+        return serverSocket.getLocalPort();
+    }
 
     private void handleRequest(Socket clientSocket) throws IOException, SQLException {
-
         HttpMessage request = new HttpMessage(clientSocket);
         String requestLine = request.getStartLine();
         System.out.println("REQUEST " + requestLine);
 
         String requestMethod = requestLine.split(" ")[0];
-
         String requestTarget = requestLine.split(" ")[1];
 
-
         int questionPos = requestTarget.indexOf('?');
-
         String requestPath = questionPos != -1 ? requestTarget.substring(0, questionPos) : requestTarget;
 
         if (requestMethod.equals("POST")) {
-            handlePostRequest(clientSocket, request);
+            if(requestPath.equals("/api/newWorker")) {
+                handlePostRequest(clientSocket, request);
+            } else {
+                getController(requestPath).handle(request, clientSocket);
+            }
         } else {
             if (requestPath.equals("/echo")) {
                 handleEchoRequest(clientSocket, requestTarget, questionPos);
             } else if (requestPath.equals("/api/products")) {
                 handleGetProducts(clientSocket);
             } else {
-                handleFileRequest(clientSocket, requestPath);
+                HttpController controller = controllers.get(requestPath);
+                if(controller != null){
+                    controller.handle(request, clientSocket);
+                } else {
+                    handleFileRequest(clientSocket, requestPath);
+                }
             }
         }
+    }
+
+    private HttpController getController(String requestPath) {
+        return controllers.get(requestPath);
     }
 
     private void handleFileRequest(Socket clientSocket, String requestPath) throws IOException {
