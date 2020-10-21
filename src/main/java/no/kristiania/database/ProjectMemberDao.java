@@ -16,9 +16,6 @@ public class ProjectMemberDao {
 
     public static void main(String[] args) throws SQLException {
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/postgres");
-        dataSource.setUser("user_db");
-        dataSource.setPassword("asdqwe123");
 
         ProjectMemberDao projectMemberDao = new ProjectMemberDao(dataSource);
 
