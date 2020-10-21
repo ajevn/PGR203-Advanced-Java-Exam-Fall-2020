@@ -172,10 +172,19 @@ public class HttpServer {
     }
 
     public static void main(String[] args) throws IOException {
-        //TODO -- Code should ensure that *pgr203.properties* file is created with correct properties
+        //Loading pgr203.properties file and ensuring that file exists and all properties are submitted
         Properties properties = new Properties();
-        try (FileReader fileReader = new FileReader("./pgr203.properties")) {
+        try (FileReader fileReader = new FileReader("pgr203.properties")) {
+            if (properties.getProperty("dataSource.url") == null){
+                logger.warn("Missing URL property in properties file.");
+                } else if (properties.getProperty("dataSource.username") == null){
+                    logger.warn("Missing USERNAME property in properties file.");
+                    } else if (properties.getProperty("dataSource.password") == null){
+                        logger.warn("Missing PASSWORD property in properties file.");
+                    }
             properties.load(fileReader);
+        } catch (Exception e){
+            logger.warn("Properties file does not exist - " + e.getMessage());
         }
 
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
