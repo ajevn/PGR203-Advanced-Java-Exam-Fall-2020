@@ -8,8 +8,10 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.sql.SQLException;
 import java.util.Date;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HttpServerTest {
@@ -83,6 +85,16 @@ class HttpServerTest {
 
         HttpClient client = new HttpClient("localhost", 10007, "/notFound.txt");
         assertEquals(404, client.getStatusCode());
+    }
+
+    @Test
+    void shouldPostNewMember() throws IOException, SQLException {
+        HttpServer server = new HttpServer(10008, dataSource);
+        HttpClient client = new HttpClient("localhost", 10008, "/api/newWorker", "POST", "firstName=testmember&lastName=testmemberlast&email=test@mail");
+        assertEquals(200, client.getStatusCode());
+        assertThat(server.getProjectMembers())
+                .extracting(projectMember -> projectMember.getFirstName() + projectMember.getLastName())
+                .contains("testmember" + "testmemberlast");
     }
 
 }

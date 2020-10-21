@@ -1,0 +1,19 @@
+@startuml
+
+actor User
+participant WebBrowser
+
+box Java Server
+    participant HttpServer
+    participant ProjectMemberListController
+    participant ProjectMemberDao
+end box
+
+database PostgreSQL
+
+User -> WebBrowser: List products
+WebBrowser -> HttpServer: /index.html
+WebBrowser <- HttpServer: <html>...<script>fetch()</html>
+WebBrowser -> HttpServer
+
+@enduml

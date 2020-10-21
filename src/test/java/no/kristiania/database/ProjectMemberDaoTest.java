@@ -1,6 +1,5 @@
 package no.kristiania.database;
 
-import no.kristiania.httpserver.ProjectMember;
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,16 +23,14 @@ class ProjectMemberDaoTest {
     }
 
     @Test
-    void shouldListInsertedMember() throws SQLException {
-        ProjectMember member1 =  new ProjectMember("Andreas", "jevn", "test@email");
+    void shouldListInsertedMembers() throws SQLException {
+        ProjectMember member1 = new ProjectMember("member1", "jevn", "test@email");
+        ProjectMember member2 = new ProjectMember("member2", "jevn", "test@email");
         memberDao.insert(member1);
+        memberDao.insert(member2);
 
         assertThat(memberDao.list())
                 .extracting(ProjectMember::getFirstName)
-                .contains(member1.getFirstName());
-        assertThat(memberDao.list())
-                .extracting(ProjectMember::getLastName)
-                .contains(member1.getLastName());
+                .contains(member1.getFirstName(), member2.getFirstName());
     }
-
 }

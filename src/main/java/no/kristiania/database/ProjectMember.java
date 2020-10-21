@@ -1,4 +1,4 @@
-package no.kristiania.httpserver;
+package no.kristiania.database;
 
 public class ProjectMember {
     private String firstName;

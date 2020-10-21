@@ -1,5 +1,6 @@
 package no.kristiania.httpserver;
 
+import no.kristiania.database.ProjectMember;
 import no.kristiania.database.ProjectMemberDao;
 import org.flywaydb.core.Flyway;
 import org.postgresql.ds.PGSimpleDataSource;
@@ -12,7 +13,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URLDecoder;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -21,7 +21,6 @@ public class HttpServer {
     private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
     public static final String CONNECTION_CLOSE = "Connection: close\r\n";
     private ProjectMemberDao projectMemberDao;
-    public List<ProjectMember> projectMembers = new ArrayList<>();
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
         projectMemberDao = new ProjectMemberDao(dataSource);
@@ -198,7 +197,7 @@ public class HttpServer {
         logger.info("Started on http://localhost:{}/index.html", 8080);
     }
 
-    public List<ProjectMember> getProjectMembers() {
-        return projectMembers;
+    public List<ProjectMember> getProjectMembers() throws SQLException {
+        return projectMemberDao.list();
     }
 }

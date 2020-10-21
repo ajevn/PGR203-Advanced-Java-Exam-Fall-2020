@@ -1,5 +1,4 @@
 package no.kristiania.database;
-import no.kristiania.httpserver.ProjectMember;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
