@@ -25,17 +25,17 @@ public class HttpServer {
 
     public static final String CONNECTION_CLOSE = "Connection: close\r\n";
     private ProjectMemberDao projectMemberDao;
+    private ProjectTaskDao projectTaskDao;
     private ServerSocket serverSocket;
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
         projectMemberDao = new ProjectMemberDao(dataSource);
-        ProjectTaskDao projectTaskDao = new ProjectTaskDao(dataSource);
+        projectTaskDao = new ProjectTaskDao(dataSource);
 
         controllers = Map.of(
-                "/api/members", new ProjectTaskGetController(projectTaskDao)
-                //"/api/categories", new ProjectTaskGetController(projectTaskDao)
+                "/api/tasks", new ProjectTaskGetController(projectTaskDao),
+                "/api/newTask", new ProjectTaskPostController(projectTaskDao)
         );
-
 
         ServerSocket serverSocket = new ServerSocket(port);
         new Thread(() -> {
@@ -68,7 +68,6 @@ public class HttpServer {
             if(requestPath.equals("/api/newWorker")) {
                 handlePostRequest(clientSocket, request);
             } else {
-                System.out.println(requestPath);
                 getController(requestPath).handle(request, clientSocket);
             }
         } else {

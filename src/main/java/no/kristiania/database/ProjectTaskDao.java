@@ -12,8 +12,6 @@ import java.util.List;
 
 public class ProjectTaskDao extends AbstractDao<ProjectTask>{
 
-    private DataSource dataSource;
-
     public ProjectTaskDao(DataSource dataSource) {
         super(dataSource);
     }
@@ -32,8 +30,8 @@ public class ProjectTaskDao extends AbstractDao<ProjectTask>{
     @Override
     protected ProjectTask mapRow(ResultSet rs) throws SQLException {
         ProjectTask task = new ProjectTask();
-        task.setId(rs.getLong("task_name"));
-        task.setName(rs.getString("task_status"));
+        task.setName(rs.getString("task_name"));
+        task.setStatus(rs.getString("task_status"));
         return task;
     }
 
