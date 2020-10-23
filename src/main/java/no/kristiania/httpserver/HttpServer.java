@@ -12,7 +12,6 @@ import javax.sql.DataSource;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.URLDecoder;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +32,8 @@ public class HttpServer {
         ProjectTaskDao projectTaskDao = new ProjectTaskDao(dataSource);
 
         controllers = Map.of(
-                "/api/newCategory", new ProjectTaskGetController(projectTaskDao),
-                "/api/categories", new ProjectTaskGetController(projectTaskDao)
+                "/api/members", new ProjectTaskGetController(projectTaskDao)
+                //"/api/categories", new ProjectTaskGetController(projectTaskDao)
         );
 
 
@@ -69,13 +68,14 @@ public class HttpServer {
             if(requestPath.equals("/api/newWorker")) {
                 handlePostRequest(clientSocket, request);
             } else {
+                System.out.println(requestPath);
                 getController(requestPath).handle(request, clientSocket);
             }
         } else {
             if (requestPath.equals("/echo")) {
                 handleEchoRequest(clientSocket, requestTarget, questionPos);
-            } else if (requestPath.equals("/api/products")) {
-                handleGetProducts(clientSocket);
+            } else if (requestPath.equals("/api/members")) {
+                handleGetMembers(clientSocket);
             } else {
                 HttpController controller = controllers.get(requestPath);
                 if(controller != null){
@@ -132,16 +132,9 @@ public class HttpServer {
         String lastName = requestParameter.getParameter("lastName");
         String email = requestParameter.getParameter("email");
 
-        // Decoding to UTF-8 to allow "æøå, @" and other characters
-        String decodedEmail = URLDecoder.decode(email, "UTF-8");
-        String decodedFirstName = URLDecoder.decode(firstName, "UTF-8");
-        String decodedLastName = URLDecoder.decode(lastName, "UTF-8");
-
-
-        ProjectMember member = createMember(decodedFirstName, decodedLastName, decodedEmail);
+        ProjectMember member = createMember(firstName, lastName, email);
         projectMemberDao.insert(member);
         System.out.println("Member: " + member.getFirstName() + ", " + member.getLastName() + " - " + member.getEmail() + " added successfully");
-
 
         String body = "Okay";
         String response = "HTTP/1.1 200 OK\r\n" +
@@ -157,7 +150,7 @@ public class HttpServer {
         ProjectMember newMember = new ProjectMember(firstName, lastName, email);
         return newMember;
     }
-    private void handleGetProducts(Socket clientSocket) throws IOException, SQLException {
+    private void handleGetMembers(Socket clientSocket) throws IOException, SQLException {
         List<ProjectMember> memberList = projectMemberDao.list();
         String body = "<ul>";
         for (ProjectMember member : memberList) {
