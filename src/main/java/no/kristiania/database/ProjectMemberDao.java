@@ -31,7 +31,7 @@ public class ProjectMemberDao extends AbstractDao<ProjectMember>{
     }
 
     public ProjectMember retrieve(Long id) throws SQLException {
-        return retrieve(id, "SELECT * FROM project_members WHERE id = ?");
+        return super.retrieve(id, "SELECT * FROM project_members WHERE id = ?");
     }
 
     @Override
