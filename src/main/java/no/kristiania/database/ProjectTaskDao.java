@@ -37,6 +37,7 @@ public class ProjectTaskDao extends AbstractDao<ProjectTask>{
     @Override
     protected ProjectTask mapRow(ResultSet rs) throws SQLException {
         ProjectTask task = new ProjectTask();
+        task.setId(rs.getLong("id"));
         task.setName(rs.getString("task_name"));
         task.setStatus(rs.getString("task_status"));
         return task;

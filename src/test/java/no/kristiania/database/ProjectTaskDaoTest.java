@@ -26,8 +26,8 @@ class ProjectTaskDaoTest {
 
     @Test
     void shouldListInsertedTasks() throws SQLException {
-        ProjectTask task1 = new ProjectTask(exampleTasks(), "Green");
-        ProjectTask task2 = new ProjectTask(exampleTasks(), "Red");
+        ProjectTask task1 = new ProjectTask(exampleTaskName(), "Green");
+        ProjectTask task2 = new ProjectTask(exampleTaskName(), "Red");
         taskDao.insert(task1);
         taskDao.insert(task2);
 
@@ -36,11 +36,28 @@ class ProjectTaskDaoTest {
                 .contains(task1.getName(), task2.getName());
     }
     @Test
-    void shouldRetrieveTaskById() throws SQLException{
+    void shouldRetrieveTaskById() throws SQLException {
+        taskDao.insert(exampleTask());
+        taskDao.insert(exampleTask());
+        ProjectTask projectTask = exampleTask();
+        taskDao.insert(projectTask);
 
+        assertThat(projectTask).hasNoNullFieldsOrProperties();
+
+        assertThat(taskDao.retrieve(projectTask.getId()))
+                .usingRecursiveComparison()
+                .isEqualTo(projectTask);
     }
 
-    private String exampleTasks() {
+    private ProjectTask exampleTask() {
+        ProjectTask task = new ProjectTask();
+        task.setName(exampleTaskName());
+        task.setStatus("Green");
+        return task;
+    }
+
+
+    private String exampleTaskName() {
         String[] options = {"Clean", "Scrub", "Fix Broken", "Something else"};
         return options[random.nextInt(options.length)];
     }

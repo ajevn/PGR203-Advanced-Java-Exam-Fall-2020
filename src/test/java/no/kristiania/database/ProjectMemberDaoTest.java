@@ -6,11 +6,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
+import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ProjectMemberDaoTest {
 
+    private Random random = new Random();
     private ProjectMemberDao memberDao;
 
     @BeforeEach
@@ -24,8 +26,8 @@ class ProjectMemberDaoTest {
 
     @Test
     void shouldListInsertedMembers() throws SQLException {
-        ProjectMember member1 = new ProjectMember("member1", "jevn", "test@email");
-        ProjectMember member2 = new ProjectMember("member2", "jevn", "test@email");
+        ProjectMember member1 = new ProjectMember(exampleName(), exampleName(), "test@email");
+        ProjectMember member2 = new ProjectMember(exampleName(), exampleName(), "test2@email");
         memberDao.insert(member1);
         memberDao.insert(member2);
 
@@ -33,4 +35,24 @@ class ProjectMemberDaoTest {
                 .extracting(ProjectMember::getFirstName)
                 .contains(member1.getFirstName(), member2.getFirstName());
     }
+
+    @Test
+    void shouldRetrieveMemberById() throws SQLException {
+        ProjectMember member1 = new ProjectMember(exampleName(), exampleName(), "test@email");
+        ProjectMember member2 = new ProjectMember(exampleName(), exampleName(), "test2@email");
+        memberDao.insert(member1);
+        memberDao.insert(member2);
+
+        assertThat(member1).hasNoNullFieldsOrProperties();
+        assertThat(member2).hasNoNullFieldsOrProperties();
+
+        assertThat(memberDao.retrieve(member1.getId()).getId())
+                .isEqualTo(member1.getId());
+    }
+
+    private String exampleName() {
+        String[] options = {"Andreas", "Bob", "Johannes", "Olav", "Henning"};
+        return options[random.nextInt(options.length)];
+    }
+
 }

@@ -37,6 +37,7 @@ public class ProjectMemberDao extends AbstractDao<ProjectMember>{
     @Override
     protected ProjectMember mapRow(ResultSet rs) throws SQLException {
         ProjectMember projectMember = new ProjectMember();
+        projectMember.setId(rs.getLong("id"));
         projectMember.setFirstName(rs.getString("member_firstname"));
         projectMember.setLastName(rs.getString("member_lastname"));
         projectMember.setEmail(rs.getString("member_email"));
