@@ -1,6 +1,5 @@
 create table project_tasks (
-    id serial,
+    id serial primary key,
     task_name varchar(50),
-    task_status varchar(50),
-    PRIMARY KEY (id)
+    task_status varchar(50)
 );

@@ -6,29 +6,36 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectMemberDao{
-
-    private DataSource dataSource;
+public class ProjectMemberDao extends AbstractDao<ProjectMember>{
 
     public ProjectMemberDao(DataSource dataSource) {
-        this.dataSource = dataSource;
+        super(dataSource);
     }
 
     public void insert(ProjectMember projectMember) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO project_members (member_firstName," +
-                    " member_lastName," +
-                    " member_email) "
-                    + "VALUES(?,?,?)")) {
+            try (PreparedStatement statement = connection.prepareStatement("INSERT INTO project_members (member_firstName, member_lastName, member_email)"
+                    + " VALUES(?,?,?)",
+                    Statement.RETURN_GENERATED_KEYS)) {
                 statement.setString(1, projectMember.getFirstName());
                 statement.setString(2, projectMember.getLastName());
                 statement.setString(3, projectMember.getEmail());
                 statement.executeUpdate();
+
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    generatedKeys.next();
+                    projectMember.setId(generatedKeys.getLong("id"));
+                }
             }
         }
     }
 
-    private ProjectMember mapRowToMember(ResultSet rs) throws SQLException {
+    public ProjectMember retrieve(Long id) throws SQLException {
+        return retrieve(id, "SELECT * FROM project_members WHERE id = ?");
+    }
+
+    @Override
+    protected ProjectMember mapRow(ResultSet rs) throws SQLException {
         ProjectMember projectMember = new ProjectMember();
         projectMember.setFirstName(rs.getString("member_firstname"));
         projectMember.setLastName(rs.getString("member_lastname"));
@@ -42,7 +49,7 @@ public class ProjectMemberDao{
                 try (ResultSet rs = statement.executeQuery()) {
                     List<ProjectMember> projectMembers = new ArrayList<>();
                     while (rs.next()) {
-                        projectMembers.add(mapRowToMember(rs));
+                        projectMembers.add(mapRow(rs));
                     }
                     return projectMembers;
                 }
