@@ -30,6 +30,5 @@ public class ProjectTaskGetController implements HttpController {
                 body;
 
         clientSocket.getOutputStream().write(response.getBytes());
-
     }
 }

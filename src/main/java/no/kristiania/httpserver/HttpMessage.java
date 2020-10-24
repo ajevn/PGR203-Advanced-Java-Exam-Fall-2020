@@ -2,6 +2,7 @@ package no.kristiania.httpserver;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,10 +43,11 @@ public class HttpMessage {
     static String readBody(Socket socket, int contentLength) throws IOException {
         StringBuilder body = new StringBuilder();
         for (int i = 0; i < contentLength; i++) {
-            // Read content body based on content-length
             body.append((char) socket.getInputStream().read());
         }
-        return body.toString();
+        // Decoding String to allow "æøå, @" and other symbols.
+        String bodyDecoded = URLDecoder.decode(body.toString(), "UTF-8");
+        return bodyDecoded;
     }
 
     static Map<String, String> readHeaders(Socket socket) throws IOException {

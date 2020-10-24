@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>KristianiaProject</title>
+    <title>Kristania Project</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -10,7 +10,7 @@
 <h2>Index.html</h2>
 
 <strong>Members</strong>
-<div id="products">
+<div id="members">
 
 </div>
 
@@ -20,10 +20,16 @@
 <div>
     <a href="newTask.html">Add new task</a>
 </div>
+<div>
+    <a href="projectMembers.html">List members</a>
+</div>
+<div>
+    <a href="projectTasks.html">List tasks</a>
+</div>
 </body>
 <script>
-    fetch("/api/products").then(response => response.text()).then(html => {
-        document.getElementById("products").innerHTML = html;
+    fetch("/api/members").then(response => response.text()).then(html => {
+        document.getElementById("members").innerHTML = html;
     });
 </script>
 </html>

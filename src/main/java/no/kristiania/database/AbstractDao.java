@@ -28,5 +28,10 @@ public abstract class AbstractDao<T> {
         }
     }
 
-    protected abstract T mapRow(ResultSet rs) throws SQLException;
+    protected T mapRow(ResultSet rs) throws SQLException{
+        System.out.println(rs.getClass());
+
+        System.out.println("Failed in determining type of T");
+        return null;
+    };
 }
