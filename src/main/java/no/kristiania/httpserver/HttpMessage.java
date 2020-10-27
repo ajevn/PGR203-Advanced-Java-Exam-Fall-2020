@@ -14,10 +14,8 @@ public class HttpMessage {
     public HttpMessage(Socket socket) throws IOException {
         startLine = readLine(socket);
 
-        // After start line the response contains 0 or more response header
         headers = readHeaders(socket);
 
-        // Response header content-length tells who many bytes the response body is
         String contentLength = headers.get("Content-Length");
         if (contentLength != null) {
             body = readBody(socket, Integer.parseInt(contentLength));
@@ -30,9 +28,8 @@ public class HttpMessage {
         StringBuilder line = new StringBuilder();
         int c;
         while ((c = socket.getInputStream().read()) != -1) {
-            // each line ends with \r\n (CRLF - carriage return, line feed)
             if (c == '\r') {
-                socket.getInputStream().read(); // read and ignore the following \n
+                socket.getInputStream().read();
                 break;
             }
             line.append((char)c);
@@ -45,7 +42,6 @@ public class HttpMessage {
         for (int i = 0; i < contentLength; i++) {
             body.append((char) socket.getInputStream().read());
         }
-        // Decoding String to allow "æøå, @" and other symbols.
         String bodyDecoded = URLDecoder.decode(body.toString(), "UTF-8");
         return bodyDecoded;
     }
@@ -54,13 +50,10 @@ public class HttpMessage {
         Map<String, String> headers = new HashMap<>();
         String headerLine;
         while (!(headerLine = readLine(socket)).isEmpty()) {
-            // response header consists "name: value"
             int colonPos = headerLine.indexOf(':');
-            // parse header
             String headerName = headerLine.substring(0, colonPos);
             String headerValue = headerLine.substring(colonPos+1).trim();
 
-            // store headers
             headers.put(headerName, headerValue);
         }
         return headers;

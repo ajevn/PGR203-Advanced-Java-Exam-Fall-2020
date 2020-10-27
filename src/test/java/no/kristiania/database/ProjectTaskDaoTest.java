@@ -26,8 +26,8 @@ class ProjectTaskDaoTest {
 
     @Test
     void shouldListInsertedTasks() throws SQLException {
-        ProjectTask task1 = new ProjectTask(exampleTaskName(), "Green");
-        ProjectTask task2 = new ProjectTask(exampleTaskName(), "Red");
+        ProjectTask task1 = new ProjectTask(exampleTaskName(),"description1", "Green");
+        ProjectTask task2 = new ProjectTask(exampleTaskName(),"description2", "Red");
         taskDao.insert(task1);
         taskDao.insert(task2);
 
@@ -52,6 +52,7 @@ class ProjectTaskDaoTest {
     private ProjectTask exampleTask() {
         ProjectTask task = new ProjectTask();
         task.setName(exampleTaskName());
+        task.setDescription("Example Desc");
         task.setStatus("Green");
         return task;
     }

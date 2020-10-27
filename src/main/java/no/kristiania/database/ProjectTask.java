@@ -3,15 +3,17 @@ package no.kristiania.database;
 public class ProjectTask {
 
     private String name;
+    private String description;
     private String status;
     private long id;
 
     public ProjectTask() {
     }
 
-    public ProjectTask(String name, String description) {
+    public ProjectTask(String name, String description, String status) {
         this.name = name;
-        this.status = description;
+        this.description = description;
+        this.status = status;
     }
 
     public String getName() {
@@ -20,6 +22,14 @@ public class ProjectTask {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getStatus() {

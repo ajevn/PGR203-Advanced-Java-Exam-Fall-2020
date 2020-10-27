@@ -10,17 +10,27 @@
 
 <form method="POST" action="/api/newTask">
     <div>
-        <label>Task Name:
+        <label>
+            Task Name:
             <input type="text" name="taskName" />
         </label>
-    </div>
-    <div>
-        <label>Task Name:
-            <input type="text" name="taskStatus" />
+        <label>
+            Description:
+            <textarea name="taskDescription" placeholder="Add task description"></textarea>
         </label>
-    </div>
+        <label>
+            Task Status:
+            <select type="text" name="taskStatus" >
+                <option selected disabled hidden style="..." value=""></option>
+                <option value="Todo">Todo</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+            </select>
+        </label>
 
-    <button type="submit">Add</button>
+        <button type="submit">Add</button>
+    </div>
 </form>
 
 <div>

@@ -1,5 +1,6 @@
 package no.kristiania.httpserver;
 
+import no.kristiania.controllers.*;
 import no.kristiania.database.ProjectMember;
 import no.kristiania.database.ProjectMemberDao;
 import no.kristiania.database.ProjectTaskDao;
@@ -34,7 +35,9 @@ public class HttpServer {
 
         controllers = Map.of(
                 "/api/tasks", new ProjectTaskGetController(projectTaskDao),
-                "/api/newTask", new ProjectTaskPostController(projectTaskDao)
+                "/api/newTask", new ProjectTaskPostController(projectTaskDao),
+                "/api/members", new ProjectMemberGetController(projectMemberDao),
+                "/api/newMember", new ProjectMemberPostController(projectMemberDao)
         );
 
         ServerSocket serverSocket = new ServerSocket(port);
@@ -65,19 +68,13 @@ public class HttpServer {
         String requestPath = questionPos != -1 ? requestTarget.substring(0, questionPos) : requestTarget;
 
         if (requestMethod.equals("POST")) {
-            if(requestPath.equals("/api/newWorker")) {
-                handlePostRequest(clientSocket, request);
-            } else {
-                getController(requestPath).handle(request, clientSocket);
-            }
+            getController(requestPath).handle(request, clientSocket);
         } else {
             if (requestPath.equals("/echo")) {
                 handleEchoRequest(clientSocket, requestTarget, questionPos);
-            } else if (requestPath.equals("/api/members")) {
-                handleGetMembers(clientSocket);
             } else {
                 HttpController controller = controllers.get(requestPath);
-                if(controller != null){
+                if (controller != null) {
                     controller.handle(request, clientSocket);
                 } else {
                     handleFileRequest(clientSocket, requestPath);
@@ -85,6 +82,7 @@ public class HttpServer {
             }
         }
     }
+
 
     private HttpController getController(String requestPath) {
         return controllers.get(requestPath);
@@ -122,48 +120,6 @@ public class HttpServer {
             clientSocket.getOutputStream().write(response.getBytes());
             clientSocket.getOutputStream().write(buffer.toByteArray());
         }
-    }
-
-    public void handlePostRequest(Socket clientSocket, HttpMessage request) throws IOException, SQLException {
-        QueryString requestParameter = new QueryString(request.getBody());
-
-        String firstName = requestParameter.getParameter("firstName");
-        String lastName = requestParameter.getParameter("lastName");
-        String email = requestParameter.getParameter("email");
-
-        ProjectMember member = createMember(firstName, lastName, email);
-        projectMemberDao.insert(member);
-        System.out.println("Member: " + member.getFirstName() + ", " + member.getLastName() + " - " + member.getEmail() + " added successfully");
-
-        String body = "Okay";
-        String response = "HTTP/1.1 200 OK\r\n" +
-                "Content-Length: " + body.length() + "\r\n" +
-                CONNECTION_CLOSE +
-                "\r\n" +
-                body;
-
-        clientSocket.getOutputStream().write(response.getBytes());
-    }
-
-    private ProjectMember createMember(String firstName, String lastName, String email){
-        ProjectMember newMember = new ProjectMember(firstName, lastName, email);
-        return newMember;
-    }
-    private void handleGetMembers(Socket clientSocket) throws IOException, SQLException {
-        List<ProjectMember> memberList = projectMemberDao.list();
-        String body = "<ul>";
-        for (ProjectMember member : memberList) {
-            body += "<li>" + "Name: <Strong>" +  member.getFirstName() + ", " + member.getLastName() + "</Strong> Email: <Strong>" + member.getEmail() + "</Strong></li>";
-        }
-        body += "</ul>";
-        String response = "HTTP/1.1 200 OK\r\n" +
-                "Content-Length: " + body.length() + "\r\n" +
-                "Content-Type: text/html\r\n" +
-                CONNECTION_CLOSE +
-                "\r\n" +
-                body;
-
-        clientSocket.getOutputStream().write(response.getBytes());
     }
 
     private void handleEchoRequest(Socket clientSocket, String requestTarget, int questionPos) throws IOException {
