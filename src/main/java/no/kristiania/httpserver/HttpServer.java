@@ -1,7 +1,6 @@
 package no.kristiania.httpserver;
 
 import no.kristiania.controllers.*;
-import no.kristiania.database.ProjectMember;
 import no.kristiania.database.ProjectMemberDao;
 import no.kristiania.database.ProjectTaskDao;
 import org.flywaydb.core.Flyway;
@@ -14,7 +13,6 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -34,10 +32,10 @@ public class HttpServer {
         projectTaskDao = new ProjectTaskDao(dataSource);
 
         controllers = Map.of(
-                "/api/tasks", new ProjectTaskGetController(projectTaskDao),
-                "/api/newTask", new ProjectTaskPostController(projectTaskDao),
-                "/api/members", new ProjectMemberGetController(projectMemberDao),
-                "/api/newMember", new ProjectMemberPostController(projectMemberDao)
+                "/api/tasks", new ProjectTaskController(projectTaskDao),
+                "/api/newTask", new ProjectTaskController(projectTaskDao),
+                "/api/members", new ProjectMemberController(projectMemberDao),
+                "/api/newMember", new ProjectMemberController(projectMemberDao)
         );
 
         ServerSocket serverSocket = new ServerSocket(port);
