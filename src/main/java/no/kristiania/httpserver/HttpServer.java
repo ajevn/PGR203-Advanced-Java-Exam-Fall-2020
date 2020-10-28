@@ -36,6 +36,7 @@ public class HttpServer {
                 "/api/newTask", new ProjectTaskController(projectTaskDao),
                 "/api/members", new ProjectMemberController(projectMemberDao),
                 "/api/newMember", new ProjectMemberController(projectMemberDao)
+                "/"
         );
 
         ServerSocket serverSocket = new ServerSocket(port);

@@ -6,6 +6,7 @@ public class ProjectMember {
     private String lastName;
     private String email;
     private long id;
+    private long taskId;
 
     public ProjectMember() {
     }
@@ -46,5 +47,13 @@ public class ProjectMember {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(long taskId) {
+        this.taskId = taskId;
     }
 }
