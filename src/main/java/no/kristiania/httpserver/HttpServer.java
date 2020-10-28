@@ -1,7 +1,6 @@
 package no.kristiania.httpserver;
 
 import no.kristiania.controllers.*;
-import no.kristiania.database.ProjectMember;
 import no.kristiania.database.ProjectMemberDao;
 import no.kristiania.database.ProjectTaskDao;
 import org.flywaydb.core.Flyway;
@@ -14,7 +13,6 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -34,10 +32,10 @@ public class HttpServer {
         projectTaskDao = new ProjectTaskDao(dataSource);
 
         controllers = Map.of(
-                "/api/tasks", new ProjectTaskGetController(projectTaskDao),
-                "/api/newTask", new ProjectTaskPostController(projectTaskDao),
-                "/api/members", new ProjectMemberGetController(projectMemberDao),
-                "/api/newMember", new ProjectMemberPostController(projectMemberDao)
+                "/api/tasks", new ProjectTaskController(projectTaskDao),
+                "/api/newTask", new ProjectTaskController(projectTaskDao),
+                "/api/members", new ProjectMemberController(projectMemberDao),
+                "/api/newMember", new ProjectMemberController(projectMemberDao)
         );
 
         ServerSocket serverSocket = new ServerSocket(port);
@@ -145,17 +143,18 @@ public class HttpServer {
     }
 
     public static void main(String[] args) throws IOException {
-        //Loading pgr203.properties file and ensuring that file exists and all properties are submitted
+        //Loading pgr203.properties file and ensuring that file exists and that required property keys exists and has a value
         Properties properties = new Properties();
+        String[] propKeys = {"dataSource.url", "dataSource.username", "dataSource.password"};
         try (FileReader fileReader = new FileReader("pgr203.properties")) {
-            if (properties.getProperty("dataSource.url") == null){
-                logger.warn("Missing URL property in properties file.");
-                } else if (properties.getProperty("dataSource.username") == null){
-                    logger.warn("Missing USERNAME property in properties file.");
-                    } else if (properties.getProperty("dataSource.password") == null){
-                        logger.warn("Missing PASSWORD property in properties file.");
-                    }
             properties.load(fileReader);
+            for(String key : propKeys) {
+                if(!properties.containsKey(key)){
+                    logger.warn("Properties file missing key: " + key);
+                } else if(properties.getProperty(key).length() == 0){
+                    logger.warn("Missing value for property: " + key);
+                }
+            }
         } catch (Exception e){
             logger.warn("Properties file does not exist - " + e.getMessage());
         }
@@ -171,7 +170,4 @@ public class HttpServer {
         logger.info("Started on http://localhost:{}/index.html", 8080);
     }
 
-    public List<ProjectMember> getProjectMembers() throws SQLException {
-        return projectMemberDao.list();
-    }
 }

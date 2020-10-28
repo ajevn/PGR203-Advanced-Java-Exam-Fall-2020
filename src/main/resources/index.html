@@ -10,7 +10,10 @@
 <h2>Index.html</h2>
 
 <strong>Members</strong>
-<div id="members">
+<div id="members" class="grid-container">
+</div>
+Tasks
+<div id="tasks" class="grid-container">
 
 </div>
 
@@ -30,6 +33,9 @@
 <script>
     fetch("/api/members").then(response => response.text()).then(html => {
         document.getElementById("members").innerHTML = html;
+    });
+    fetch("/api/tasks").then(response => response.text()).then(html => {
+        document.getElementById("tasks").innerHTML = html;
     });
 </script>
 </html>
