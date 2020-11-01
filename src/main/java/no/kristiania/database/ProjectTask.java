@@ -5,7 +5,7 @@ public class ProjectTask {
     private String name;
     private String description;
     private String status;
-    private long id;
+    private int id;
 
     public ProjectTask() {
     }
@@ -40,11 +40,11 @@ public class ProjectTask {
         this.status = status;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 }

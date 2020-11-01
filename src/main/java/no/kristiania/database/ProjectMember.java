@@ -5,8 +5,7 @@ public class ProjectMember {
     private String firstName;
     private String lastName;
     private String email;
-    private long id;
-    private long taskId;
+    private int id;
 
     public ProjectMember() {
     }
@@ -41,19 +40,12 @@ public class ProjectMember {
         return email;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public long getTaskId() {
-        return taskId;
-    }
-
-    public void setTaskId(long taskId) {
-        this.taskId = taskId;
-    }
 }

@@ -1,5 +1,4 @@
 package no.kristiania.database;
-import org.postgresql.ds.PGSimpleDataSource;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -24,37 +23,24 @@ public class ProjectMemberDao extends AbstractDao<ProjectMember>{
 
                 try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     generatedKeys.next();
-                    projectMember.setId(generatedKeys.getLong("id"));
+                    projectMember.setId(generatedKeys.getInt("id"));
                 }
             }
         }
     }
 
-    public ProjectMember retrieve(Long id) throws SQLException {
+    public ProjectMember retrieve(int id) throws SQLException {
         return super.retrieve(id, "SELECT * FROM project_members WHERE id = ?");
     }
 
     @Override
     protected ProjectMember mapRow(ResultSet rs) throws SQLException {
         ProjectMember projectMember = new ProjectMember();
-        projectMember.setId(rs.getLong("id"));
-        projectMember.setTaskId((Long) rs.getObject("task_id"));
+        projectMember.setId(rs.getInt("id"));
         projectMember.setFirstName(rs.getString("member_firstname"));
         projectMember.setLastName(rs.getString("member_lastname"));
         projectMember.setEmail(rs.getString("member_email"));
         return projectMember;
-    }
-
-    public void update(ProjectMember member) throws SQLException {
-        try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement statement = connection.prepareStatement(
-                    "UPDATE project_members SET task_id = ? WHERE id = ?"
-            )) {
-                statement.setLong(1, member.getTaskId());
-                statement.setLong(2, member.getId());
-                statement.executeUpdate();
-            }
-        }
     }
 
     public List<ProjectMember> list() throws SQLException {

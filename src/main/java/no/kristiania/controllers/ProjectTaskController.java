@@ -1,23 +1,31 @@
 package no.kristiania.controllers;
 
-import no.kristiania.database.ProjectTask;
-import no.kristiania.database.ProjectTaskDao;
+import no.kristiania.database.*;
 import no.kristiania.httpserver.HttpMessage;
 import no.kristiania.httpserver.QueryString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.Member;
 import java.net.Socket;
+import java.sql.Array;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ProjectTaskController implements HttpController {
     private ProjectTaskDao projectTaskDao;
+    private ProjectMemberDao projectMemberDao;
+    private MemberTaskDao memberTaskDao;
     public static final String CONNECTION_CLOSE = "Connection: close\r\n";
     private static final Logger logger = LoggerFactory.getLogger(ProjectTaskController.class);
 
-    public ProjectTaskController(ProjectTaskDao projectTaskDao) {
+    public ProjectTaskController(ProjectTaskDao projectTaskDao, MemberTaskDao memberTaskDao, ProjectMemberDao projectMemberDao) {
         this.projectTaskDao = projectTaskDao;
+        this.memberTaskDao = memberTaskDao;
+        this.projectMemberDao = projectMemberDao;
     }
 
     @Override
@@ -52,8 +60,28 @@ public class ProjectTaskController implements HttpController {
 
         // Else if request method is of type GET - Run get method
         String body = "<ul>";
-        for (ProjectTask task : projectTaskDao.list()) {
-            body += "<li>" + task.getName() + " - " + task.getDescription() + " - " + "Status: " + task.getStatus() + "</li>";
+        for (ProjectTask projectTask : projectTaskDao.list()) {
+            int taskId = projectTask.getId();
+            System.out.println("Task" + taskId);
+
+            // Retrieves list of member-task associations relevant to this taskId
+            MemberTask memberTask =  memberTaskDao.retrieveByTaskId(taskId);
+            ArrayList<MemberTask> memberTaskArray;
+            for (MemberTask memberTasks : memberTask){
+            memberTask = (List<MemberTask>) memberTaskDao.retrieveByTaskId(taskId);
+
+            for (MemberTask taskA : memberTask){
+                System.out.println(taskA.getMemberId() + taskA.getTaskId());
+            }
+
+//            ProjectMember assignedMembers = projectMemberDao.retrieve(projectMembers);
+//                for (ProjectMember members : assignedMembers){
+//
+//                }
+
+//            body += "<li>" + projectTask.getName()+ " - " + projectTask.getDescription() + " - " + "Status: " + projectTask.getStatus() + "<br> Assigned to: " +
+//                    projectMember.getFirstName() + ", " + projectMember.getLastName() +
+//                    "</li>";
         }
 
         body += "</ul>";

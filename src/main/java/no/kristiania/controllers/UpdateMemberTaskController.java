@@ -1,5 +1,7 @@
 package no.kristiania.controllers;
 
+import no.kristiania.database.MemberTask;
+import no.kristiania.database.MemberTaskDao;
 import no.kristiania.database.ProjectMember;
 import no.kristiania.database.ProjectMemberDao;
 import no.kristiania.httpserver.HttpMessage;
@@ -9,11 +11,13 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 
-public class UpdateMemberController implements HttpController {
-    private ProjectMemberDao memberDao;
+public class UpdateMemberTaskController implements HttpController {
+    private MemberTaskDao memberTaskDao;
+    private ProjectMemberDao projectMemberDao;
 
-    public UpdateMemberController(ProjectMemberDao memberDao) {
-        this.memberDao = memberDao;
+    public UpdateMemberTaskController(MemberTaskDao memberTaskDao, ProjectMemberDao projectMemberDao) {
+        this.memberTaskDao = memberTaskDao;
+        this.projectMemberDao = projectMemberDao;
     }
 
     @Override
@@ -25,12 +29,14 @@ public class UpdateMemberController implements HttpController {
     public HttpMessage handle(HttpMessage request) throws SQLException {
         QueryString requestParameter = new QueryString(request.getBody());
 
-        Long memberId = Long.valueOf(requestParameter.getParameter("memberId"));
-        Long taskId = Long.valueOf(requestParameter.getParameter("taskId"));
-        ProjectMember member = memberDao.retrieve(memberId);
-        member.setTaskId(taskId);
+        int memberId = Integer.parseInt(requestParameter.getParameter("memberId"));
+        int taskId = Integer.parseInt(requestParameter.getParameter("taskId"));
+        ProjectMember projectMember = projectMemberDao.retrieve(memberId);
 
-        memberDao.update(member);
+        memberId = projectMember.getId();
+
+        MemberTask memberTask = new MemberTask(memberId, taskId);
+        memberTaskDao.insert(memberTask);
 
         HttpMessage redirect = new HttpMessage();
         redirect.setStartLine("HTTP/1.1 302 Redirect");

@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 
-public class MemberOptionsController implements HttpController{
+public class ProjectMemberOptionsController implements HttpController{
     private ProjectMemberDao memberDao;
 
-    public MemberOptionsController(ProjectMemberDao memberDao) {
+    public ProjectMemberOptionsController(ProjectMemberDao memberDao) {
         this.memberDao = memberDao;
     }
 

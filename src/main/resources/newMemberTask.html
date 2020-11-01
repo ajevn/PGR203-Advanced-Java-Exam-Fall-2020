@@ -3,14 +3,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Edit Member</title>
+    <title>Assign Task</title>
+    <link rel="stylesheet" href="style.css">v
 </head>
 <body>
 <h2>Assign Tasks</h2>
 
 <form method="post" action="/api/newMemberTask">
-    <p>Product: <select name="memberId" id="memberId" ></select></p>
-    <p>New category: <select name="taskId" id="taskId" ></select></p>
+    <select type="text" name="memberId" id="memberId">
+        <option selected disabled hidden style="..." value=""></option>
+    </select>
+    <select type="text" name="taskId" id="taskId" >
+        <option selected disabled hidden style="..." value=""></option>
+    </select>
     <button>Submit</button>
 </form>
 

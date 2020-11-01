@@ -1,6 +1,7 @@
 package no.kristiania.httpserver;
 
 import no.kristiania.controllers.*;
+import no.kristiania.database.MemberTaskDao;
 import no.kristiania.database.ProjectMemberDao;
 import no.kristiania.database.ProjectTaskDao;
 import org.flywaydb.core.Flyway;
@@ -25,19 +26,24 @@ public class HttpServer {
     public static final String CONNECTION_CLOSE = "Connection: close\r\n";
     private ProjectMemberDao projectMemberDao;
     private ProjectTaskDao projectTaskDao;
+    private MemberTaskDao memberTaskDao;
     private ServerSocket serverSocket;
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
         projectMemberDao = new ProjectMemberDao(dataSource);
         projectTaskDao = new ProjectTaskDao(dataSource);
+        memberTaskDao = new MemberTaskDao(dataSource);
+
 
         controllers = Map.of(
-                "/api/tasks", new ProjectTaskController(projectTaskDao),
-                "/api/newTask", new ProjectTaskController(projectTaskDao),
+                "/api/tasks", new ProjectTaskController(projectTaskDao, memberTaskDao, projectMemberDao),
+                "/api/newTask", new ProjectTaskController(projectTaskDao, memberTaskDao, projectMemberDao),
                 "/api/members", new ProjectMemberController(projectMemberDao),
-                "/api/newMember", new ProjectMemberController(projectMemberDao)
-                "/"
-        );
+                "/api/newMember", new ProjectMemberController(projectMemberDao),
+                "/api/newMemberTask", new UpdateMemberTaskController(memberTaskDao, projectMemberDao),
+                "/api/taskOptions", new ProjectTaskOptionsController(projectTaskDao),
+                "/api/memberOptions", new ProjectMemberOptionsController(projectMemberDao)
+                );
 
         ServerSocket serverSocket = new ServerSocket(port);
         new Thread(() -> {

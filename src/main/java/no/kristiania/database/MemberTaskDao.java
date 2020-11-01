@@ -22,6 +22,14 @@ public class MemberTaskDao extends AbstractDao<MemberTask>{
         }
     }
 
+    public MemberTask retrieve(int id) throws SQLException {
+        return super.retrieve(id, "SELECT * FROM member_task WHERE id = ?");
+    }
+
+    public MemberTask retrieveByTaskId(int taskId) throws SQLException {
+        return super.retrieve(taskId, "SELECT * FROM member_task WHERE task_id = ?");
+    }
+
     @Override
     protected MemberTask mapRow(ResultSet rs) throws SQLException {
         MemberTask memberTask = new MemberTask();
