@@ -1,12 +1,18 @@
 package no.kristiania.controllers;
 
+<<<<<<< HEAD
 import no.kristiania.database.*;
+=======
+import no.kristiania.database.ProjectTask;
+import no.kristiania.database.ProjectTaskDao;
+>>>>>>> 57997ddd2c6fb2a981ed64c72176d2fa579f6b73
 import no.kristiania.httpserver.HttpMessage;
 import no.kristiania.httpserver.QueryString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+<<<<<<< HEAD
 import java.lang.reflect.Member;
 import java.net.Socket;
 import java.sql.Array;
@@ -26,6 +32,18 @@ public class ProjectTaskController implements HttpController {
         this.projectTaskDao = projectTaskDao;
         this.memberTaskDao = memberTaskDao;
         this.projectMemberDao = projectMemberDao;
+=======
+import java.net.Socket;
+import java.sql.SQLException;
+
+public class ProjectTaskController implements HttpController {
+    private ProjectTaskDao projectTaskDao;
+    public static final String CONNECTION_CLOSE = "Connection: close\r\n";
+    private static final Logger logger = LoggerFactory.getLogger(ProjectTaskController.class);
+
+    public ProjectTaskController(ProjectTaskDao projectTaskDao) {
+        this.projectTaskDao = projectTaskDao;
+>>>>>>> 57997ddd2c6fb2a981ed64c72176d2fa579f6b73
     }
 
     @Override
@@ -60,6 +78,7 @@ public class ProjectTaskController implements HttpController {
 
         // Else if request method is of type GET - Run get method
         String body = "<ul>";
+<<<<<<< HEAD
         for (ProjectTask projectTask : projectTaskDao.list()) {
             int taskId = projectTask.getId();
 
@@ -85,6 +104,10 @@ public class ProjectTaskController implements HttpController {
                     "<br> <Strong>Assigned to:</Strong> " +
                     sb +
                     "</li>";
+=======
+        for (ProjectTask task : projectTaskDao.list()) {
+            body += "<li>" + task.getName() + " - " + task.getDescription() + " - " + "Status: " + task.getStatus() + "</li>";
+>>>>>>> 57997ddd2c6fb2a981ed64c72176d2fa579f6b73
         }
 
         body += "</ul>";
