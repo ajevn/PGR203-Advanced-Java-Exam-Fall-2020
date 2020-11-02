@@ -1,24 +1,17 @@
 package no.kristiania.controllers;
 
-<<<<<<< HEAD
 import no.kristiania.database.*;
-=======
 import no.kristiania.database.ProjectTask;
 import no.kristiania.database.ProjectTaskDao;
->>>>>>> 57997ddd2c6fb2a981ed64c72176d2fa579f6b73
 import no.kristiania.httpserver.HttpMessage;
 import no.kristiania.httpserver.QueryString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-<<<<<<< HEAD
-import java.lang.reflect.Member;
 import java.net.Socket;
-import java.sql.Array;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ProjectTaskController implements HttpController {
@@ -32,18 +25,6 @@ public class ProjectTaskController implements HttpController {
         this.projectTaskDao = projectTaskDao;
         this.memberTaskDao = memberTaskDao;
         this.projectMemberDao = projectMemberDao;
-=======
-import java.net.Socket;
-import java.sql.SQLException;
-
-public class ProjectTaskController implements HttpController {
-    private ProjectTaskDao projectTaskDao;
-    public static final String CONNECTION_CLOSE = "Connection: close\r\n";
-    private static final Logger logger = LoggerFactory.getLogger(ProjectTaskController.class);
-
-    public ProjectTaskController(ProjectTaskDao projectTaskDao) {
-        this.projectTaskDao = projectTaskDao;
->>>>>>> 57997ddd2c6fb2a981ed64c72176d2fa579f6b73
     }
 
     @Override
@@ -78,7 +59,7 @@ public class ProjectTaskController implements HttpController {
 
         // Else if request method is of type GET - Run get method
         String body = "<ul>";
-<<<<<<< HEAD
+
         for (ProjectTask projectTask : projectTaskDao.list()) {
             int taskId = projectTask.getId();
 
@@ -88,26 +69,22 @@ public class ProjectTaskController implements HttpController {
             // Filtering out tasks with ID similar to current iteration of outer for-loop
             ArrayList<ProjectMember> filteredMembersByTask = new ArrayList<>();
 
-            for (MemberTask task : taskList){
-                if(task.getTaskId() == (taskId)) {
+            for (MemberTask task : taskList) {
+                if (task.getTaskId() == (taskId)) {
                     int memberId = task.getMemberId();
                     filteredMembersByTask.add(projectMemberDao.retrieve(memberId));
                 }
             }
 
             StringBuilder sb = new StringBuilder();
-            for (ProjectMember member : filteredMembersByTask){
+            for (ProjectMember member : filteredMembersByTask) {
                 sb.append(member.getFirstName() + ", " + member.getLastName() + " - ");
             }
 
-            body += "<li>" + "<Strong>Task: </Strong>" + projectTask.getName()+ " - Description: " + projectTask.getDescription() + " - " + "Status: " + projectTask.getStatus() +
+            body += "<li>" + "<Strong>Task: </Strong>" + projectTask.getName() + " - Description: " + projectTask.getDescription() + " - " + "Status: " + projectTask.getStatus() +
                     "<br> <Strong>Assigned to:</Strong> " +
                     sb +
                     "</li>";
-=======
-        for (ProjectTask task : projectTaskDao.list()) {
-            body += "<li>" + task.getName() + " - " + task.getDescription() + " - " + "Status: " + task.getStatus() + "</li>";
->>>>>>> 57997ddd2c6fb2a981ed64c72176d2fa579f6b73
         }
 
         body += "</ul>";
