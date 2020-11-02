@@ -1,7 +1,5 @@
 package no.kristiania.database;
 
-import org.postgresql.ds.PGSimpleDataSource;
-
 import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
@@ -25,20 +23,20 @@ public class ProjectTaskDao extends AbstractDao<ProjectTask>{
 
                 try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
                     generatedKeys.next();
-                    projectTask.setId(generatedKeys.getLong("id"));
+                    projectTask.setId(generatedKeys.getInt("id"));
                 }
             }
         }
     }
 
-    public ProjectTask retrieve(Long id) throws SQLException {
+    public ProjectTask retrieve(int id) throws SQLException {
         return super.retrieve(id, "SELECT * FROM project_tasks WHERE id = ?");
     }
 
     @Override
     protected ProjectTask mapRow(ResultSet rs) throws SQLException {
         ProjectTask task = new ProjectTask();
-        task.setId(rs.getLong("id"));
+        task.setId(rs.getInt("id"));
         task.setName(rs.getString("task_name"));
         task.setDescription(rs.getString("task_description"));
         task.setStatus(rs.getString("task_status"));

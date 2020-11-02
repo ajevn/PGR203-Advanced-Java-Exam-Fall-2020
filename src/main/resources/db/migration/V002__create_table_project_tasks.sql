@@ -3,4 +3,4 @@ create table project_tasks (
     task_name varchar(50),
     task_description varchar(100),
     task_status varchar(50)
-);
+)
