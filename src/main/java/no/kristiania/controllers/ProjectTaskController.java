@@ -62,26 +62,29 @@ public class ProjectTaskController implements HttpController {
         String body = "<ul>";
         for (ProjectTask projectTask : projectTaskDao.list()) {
             int taskId = projectTask.getId();
-            System.out.println("Task" + taskId);
 
             // Retrieves list of member-task associations relevant to this taskId
-            MemberTask memberTask =  memberTaskDao.retrieveByTaskId(taskId);
-            ArrayList<MemberTask> memberTaskArray;
-            for (MemberTask memberTasks : memberTask){
-            memberTask = (List<MemberTask>) memberTaskDao.retrieveByTaskId(taskId);
+            List<MemberTask> taskList = memberTaskDao.list();
 
-            for (MemberTask taskA : memberTask){
-                System.out.println(taskA.getMemberId() + taskA.getTaskId());
+            // Filtering out tasks with ID similar to current iteration of outer for-loop
+            ArrayList<ProjectMember> filteredMembersByTask = new ArrayList<>();
+
+            for (MemberTask task : taskList){
+                if(task.getTaskId() == (taskId)) {
+                    int memberId = task.getMemberId();
+                    filteredMembersByTask.add(projectMemberDao.retrieve(memberId));
+                }
             }
 
-//            ProjectMember assignedMembers = projectMemberDao.retrieve(projectMembers);
-//                for (ProjectMember members : assignedMembers){
-//
-//                }
+            StringBuilder sb = new StringBuilder();
+            for (ProjectMember member : filteredMembersByTask){
+                sb.append(member.getFirstName() + ", " + member.getLastName() + " - ");
+            }
 
-//            body += "<li>" + projectTask.getName()+ " - " + projectTask.getDescription() + " - " + "Status: " + projectTask.getStatus() + "<br> Assigned to: " +
-//                    projectMember.getFirstName() + ", " + projectMember.getLastName() +
-//                    "</li>";
+            body += "<li>" + "<Strong>Task: </Strong>" + projectTask.getName()+ " - Description: " + projectTask.getDescription() + " - " + "Status: " + projectTask.getStatus() +
+                    "<br> <Strong>Assigned to:</Strong> " +
+                    sb +
+                    "</li>";
         }
 
         body += "</ul>";
