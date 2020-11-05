@@ -29,9 +29,29 @@ public class ProjectTaskDao extends AbstractDao<ProjectTask>{
         }
     }
 
+    public void updateTaskStatus(String newStatus, int id) throws SQLException {
+           super.update("UPDATE project_tasks SET task_status = '" + newStatus + "' WHERE id = ?;", id);
+    }
+
     public ProjectTask retrieve(int id) throws SQLException {
         return super.retrieve(id, "SELECT * FROM project_tasks WHERE id = ?");
     }
+
+    public List<ProjectTask> retrieveTaskByStatus(String status) throws SQLException {
+        try (Connection connection = dataSource.getConnection()) {
+            try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM project_tasks WHERE task_status = ?")) {
+                statement.setString(1, status);
+                try (ResultSet rs = statement.executeQuery()) {
+                    List<ProjectTask> projectTasks = new ArrayList<>();
+                    while (rs.next()) {
+                        projectTasks.add(mapRow(rs));
+                    }
+                    return projectTasks;
+                }
+            }
+        }
+    }
+
 
     @Override
     protected ProjectTask mapRow(ResultSet rs) throws SQLException {

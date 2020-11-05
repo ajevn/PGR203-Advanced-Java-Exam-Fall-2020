@@ -1,8 +1,6 @@
 package no.kristiania.controllers;
 
 import no.kristiania.database.*;
-import no.kristiania.database.ProjectTask;
-import no.kristiania.database.ProjectTaskDao;
 import no.kristiania.httpserver.HttpMessage;
 import no.kristiania.httpserver.QueryString;
 import org.slf4j.Logger;
@@ -29,11 +27,12 @@ public class ProjectTaskController implements HttpController {
 
     @Override
     public void handle(HttpMessage request, Socket clientSocket) throws IOException, SQLException {
-        //REQUEST POST /api/newTask HTTP/1.1
+        //REQUEST POST /api/tasks HTTP/1.1
         String requestLine = request.getStartLine();
         System.out.println("REQUEST " + requestLine);
         //POST
         String requestMethod = requestLine.split(" ")[0];
+
         //If request is of method POST - run post method
             if (requestMethod.equals("POST")) {
                 QueryString requestParameter = new QueryString(request.getBody());
@@ -50,7 +49,7 @@ public class ProjectTaskController implements HttpController {
                         "Connection: close\r\n" +
                         "Content-Length: " + body.length() + "\r\n" +
                         CONNECTION_CLOSE +
-                        "Location: /index.html" +
+                            "Location: /index.html" +
                         "\r\n" +
                         body;
                 clientSocket.getOutputStream().write(response.getBytes());
@@ -58,34 +57,33 @@ public class ProjectTaskController implements HttpController {
             }
 
         // Else if request method is of type GET - Run get method
+
         String body = "<ul>";
-
         for (ProjectTask projectTask : projectTaskDao.list()) {
-            int taskId = projectTask.getId();
+                int taskId = projectTask.getId();
 
-            // Retrieves list of member-task associations relevant to this taskId
-            List<MemberTask> taskList = memberTaskDao.list();
+                // Retrieves list of member-task associations relevant to this taskId
+                List<MemberTask> taskList = memberTaskDao.list();
 
-            // Filtering out tasks with ID similar to current iteration of outer for-loop
-            ArrayList<ProjectMember> filteredMembersByTask = new ArrayList<>();
+                // Filtering out tasks with ID similar to current iteration of outer for-loop
+                ArrayList<ProjectMember> filteredMembersByTask = new ArrayList<>();
 
-            for (MemberTask task : taskList) {
-                if (task.getTaskId() == (taskId)) {
-                    int memberId = task.getMemberId();
-                    filteredMembersByTask.add(projectMemberDao.retrieve(memberId));
+                for (MemberTask task : taskList){
+                    if(task.getTaskId() == (taskId)) {
+                        int memberId = task.getMemberId();
+                        filteredMembersByTask.add(projectMemberDao.retrieve(memberId));
+                    }
                 }
-            }
+                StringBuilder sb = new StringBuilder();
+                for (ProjectMember member : filteredMembersByTask){
+                    sb.append(member.getFirstName() + ", " + member.getLastName() + " <br> ");
+                }
 
-            StringBuilder sb = new StringBuilder();
-            for (ProjectMember member : filteredMembersByTask) {
-                sb.append(member.getFirstName() + ", " + member.getLastName() + " - ");
+                body += "<li>" + "<Strong>Task: </Strong>" + projectTask.getName()+ " <br> <Strong>Description:</Strong> " + projectTask.getDescription() + " <br> " + "<Strong>Status:</Strong> " + projectTask.getStatus() +
+                        "<br> <Strong>Assigned to:<br></Strong> " +
+                        sb +
+                        "</li>";
             }
-
-            body += "<li>" + "<Strong>Task: </Strong>" + projectTask.getName() + " - Description: " + projectTask.getDescription() + " - " + "Status: " + projectTask.getStatus() +
-                    "<br> <Strong>Assigned to:</Strong> " +
-                    sb +
-                    "</li>";
-        }
 
         body += "</ul>";
         String response = "HTTP/1.1 200 OK\r\n" +

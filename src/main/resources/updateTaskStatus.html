@@ -7,28 +7,29 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h2>Assign Tasks</h2>
+<h2>Update Tasks</h2>
 
-<form method="post" action="/api/newMemberTask">
-    <label>Assign Member:</label>
-    <select type="text" name="memberId" id="memberId">
-        <option selected disabled hidden style="..." value=""></option>
-    </select>
-    <br>
-    <label>Task: </label>
+<form method="post" action="/api/updateTask">
+    <label>Task:</label>
     <select type="text" name="taskId" id="taskId" >
         <option selected disabled hidden style="..." value=""></option>
     </select>
     <br>
+    <label>
+        New Task Status:
+        <select type="text" name="taskStatus" >
+            <option value="Todo">Todo</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
+    </label>
     <button>Submit</button>
 </form>
 
 </body>
 
 <script>
-    fetch("/api/memberOptions").then(response => response.text()).then(html => {
-        document.getElementById("memberId").innerHTML = html;
-    });
     fetch("/api/taskOptions").then(response => response.text()).then(html => {
         document.getElementById("taskId").innerHTML = html;
     });

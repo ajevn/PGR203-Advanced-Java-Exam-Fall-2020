@@ -3,3 +3,4 @@ target/
 *.iml
 pgr203.properties
 /*.properties
+/dependency-reduced-pom.xml

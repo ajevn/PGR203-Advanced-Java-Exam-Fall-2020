@@ -1,6 +1,7 @@
 package no.kristiania.httpserver;
 
 import no.kristiania.controllers.*;
+import no.kristiania.database.MemberTask;
 import no.kristiania.database.MemberTaskDao;
 import no.kristiania.database.ProjectMemberDao;
 import no.kristiania.database.ProjectTaskDao;
@@ -38,11 +39,13 @@ public class HttpServer {
         controllers = Map.of(
                 "/api/tasks", new ProjectTaskController(projectTaskDao, memberTaskDao, projectMemberDao),
                 "/api/newTask", new ProjectTaskController(projectTaskDao, memberTaskDao, projectMemberDao),
+                "/api/updateTask", new UpdateTaskController(projectTaskDao),
                 "/api/members", new ProjectMemberController(projectMemberDao),
                 "/api/newMember", new ProjectMemberController(projectMemberDao),
-                "/api/newMemberTask", new UpdateMemberTaskController(memberTaskDao, projectMemberDao),
+                "/api/newMemberTask", new CreateMemberTaskController(memberTaskDao, projectMemberDao),
                 "/api/taskOptions", new ProjectTaskOptionsController(projectTaskDao),
-                "/api/memberOptions", new ProjectMemberOptionsController(projectMemberDao)
+                "/api/memberOptions", new ProjectMemberOptionsController(projectMemberDao),
+                "/api/filterTask", new FilterTaskController(projectTaskDao, memberTaskDao, projectMemberDao)
                 );
 
         ServerSocket serverSocket = new ServerSocket(port);

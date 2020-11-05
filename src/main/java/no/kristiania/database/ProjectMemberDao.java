@@ -33,6 +33,8 @@ public class ProjectMemberDao extends AbstractDao<ProjectMember>{
         return super.retrieve(id, "SELECT * FROM project_members WHERE id = ?");
     }
 
+
+
     @Override
     protected ProjectMember mapRow(ResultSet rs) throws SQLException {
         ProjectMember projectMember = new ProjectMember();
