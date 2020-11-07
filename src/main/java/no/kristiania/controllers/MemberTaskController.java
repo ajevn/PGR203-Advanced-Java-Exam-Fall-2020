@@ -15,7 +15,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.List;
 
-public class MemberTaskController implements HttpController{
+public class MemberTaskController implements HttpController {
     private MemberTaskDao memberTaskDao;
     private static final Logger logger = LoggerFactory.getLogger(ProjectMemberController.class);
 
@@ -39,7 +39,7 @@ public class MemberTaskController implements HttpController{
             memberTask.setTaskId(Integer.parseInt(requestParameter.getParameter("memberId")));
             memberTask.setMemberId(Integer.parseInt(requestParameter.getParameter("taskId")));
             memberTaskDao.insert(memberTask);
-            logger.info("Member: " + memberTask.getMemberId() +  " - " + memberTask.getTaskId() + " added successfully");
+            logger.info("Member: " + memberTask.getMemberId() + " - " + memberTask.getTaskId() + " added successfully");
 
             HttpResponse response = new HttpResponse("302 Redirect");
             response.redirect("index.html");
@@ -52,7 +52,7 @@ public class MemberTaskController implements HttpController{
         List<MemberTask> memberTaskList = memberTaskDao.list();
         String body = "<option>";
         for (MemberTask memberTask : memberTaskList) {
-            body += "Member Id: <Strong>" +  memberTask.getMemberId() + " - Task Id: " + memberTask.getTaskId() + "</Strong>";
+            body += "Member Id: <Strong>" + memberTask.getMemberId() + " - Task Id: " + memberTask.getTaskId() + "</Strong>";
         }
         body += "</option>";
 

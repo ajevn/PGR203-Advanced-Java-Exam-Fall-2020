@@ -5,7 +5,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MemberTaskDao extends AbstractDao<MemberTask>{
+public class MemberTaskDao extends AbstractDao<MemberTask> {
     private ProjectTaskDao projectTaskDao;
 
     public MemberTaskDao(DataSource dataSource) {

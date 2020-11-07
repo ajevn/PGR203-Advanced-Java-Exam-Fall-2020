@@ -35,7 +35,7 @@ public class CreateMemberTaskController implements HttpController {
 
         memberId = projectMember.getId();
 
-        if (checkIfAssignmentExists(memberId, taskId)){
+        if (checkIfAssignmentExists(memberId, taskId)) {
             logger.warn("Member" + memberId + " already assigned to task " + taskId + ".");
         } else {
             MemberTask memberTask = new MemberTask(memberId, taskId);
@@ -54,11 +54,12 @@ public class CreateMemberTaskController implements HttpController {
 
         return;
     }
+
     private boolean checkIfAssignmentExists(Integer memberId, Integer taskId) throws SQLException {
         List<MemberTask> taskList = memberTaskDao.list();
 
-        for (MemberTask task : taskList){
-            if(task.getTaskId() == taskId && task.getMemberId() == memberId) {
+        for (MemberTask task : taskList) {
+            if (task.getTaskId() == taskId && task.getMemberId() == memberId) {
                 return true;
             }
         }

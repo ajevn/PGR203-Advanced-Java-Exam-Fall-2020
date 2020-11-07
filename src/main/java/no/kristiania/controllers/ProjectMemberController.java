@@ -29,29 +29,29 @@ public class ProjectMemberController implements HttpController {
         System.out.println("REQUEST " + requestLine);
         //POST
         String requestMethod = requestLine.split(" ")[0];
-            //If request is of method POST - run post method
-            if (requestMethod.equals("POST")) {
-                QueryString requestParameter = new QueryString(request.getBody());
+        //If request is of method POST - run post method
+        if (requestMethod.equals("POST")) {
+            QueryString requestParameter = new QueryString(request.getBody());
 
-                ProjectMember member = new ProjectMember();
-                member.setFirstName(requestParameter.getParameter("firstName"));
-                member.setLastName(requestParameter.getParameter("lastName"));
-                member.setEmail(requestParameter.getParameter("email"));
-                projectMemberDao.insert(member);
-                logger.info("Member: " + member.getFirstName() + ", " + member.getLastName() + " - " + member.getEmail() + " added successfully");
+            ProjectMember member = new ProjectMember();
+            member.setFirstName(requestParameter.getParameter("firstName"));
+            member.setLastName(requestParameter.getParameter("lastName"));
+            member.setEmail(requestParameter.getParameter("email"));
+            projectMemberDao.insert(member);
+            logger.info("Member: " + member.getFirstName() + ", " + member.getLastName() + " - " + member.getEmail() + " added successfully");
 
-                HttpResponse response = new HttpResponse("200 Ok");
-                response.redirect("index.html");
-                response.write(clientSocket);
+            HttpResponse response = new HttpResponse("200 Ok");
+            response.redirect("index.html");
+            response.write(clientSocket);
 
-                return;
-            }
+            return;
+        }
 
         // Else if request method is of type GET - Run get method
         List<ProjectMember> memberList = projectMemberDao.list();
         String body = "<ul>";
         for (ProjectMember member : memberList) {
-            body += "<li>" + "Name: <Strong>" +  member.getFirstName() + ", " + member.getLastName() + "</Strong> Email: <Strong>" + member.getEmail() + "</Strong></li>";
+            body += "<li>" + "Name: <Strong>" + member.getFirstName() + ", " + member.getLastName() + "</Strong> Email: <Strong>" + member.getEmail() + "</Strong></li>";
         }
         body += "</ul>";
         HttpResponse response = new HttpResponse("200 Ok", body);

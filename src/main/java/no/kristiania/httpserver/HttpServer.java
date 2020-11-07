@@ -45,12 +45,12 @@ public class HttpServer {
                 "/api/newMemberTask", new CreateMemberTaskController(memberTaskDao, projectMemberDao),
                 "/api/taskOptions", new ProjectTaskOptionsController(projectTaskDao),
                 "/api/memberOptions", new ProjectMemberOptionsController(projectMemberDao)
-                );
+        );
 
         ServerSocket serverSocket = new ServerSocket(port);
         new Thread(() -> {
             while (true) {
-                try (Socket clientSocket = serverSocket.accept()){
+                try (Socket clientSocket = serverSocket.accept()) {
                     handleRequest(clientSocket);
                 } catch (IOException | SQLException e) {
                     e.printStackTrace();
@@ -80,15 +80,15 @@ public class HttpServer {
             if (requestPath.equals("/echo")) {
                 handleEchoRequest(clientSocket, requestTarget, questionPos);
             } else {
-                    HttpController controller = controllers.get(requestPath);
-                    if (controller != null) {
-                        controller.handle(request, clientSocket);
-                    } else {
-                        handleFileRequest(clientSocket, requestPath);
-                    }
+                HttpController controller = controllers.get(requestPath);
+                if (controller != null) {
+                    controller.handle(request, clientSocket);
+                } else {
+                    handleFileRequest(clientSocket, requestPath);
                 }
             }
         }
+    }
 
 
     private HttpController getController(String requestPath) {
@@ -97,7 +97,7 @@ public class HttpServer {
 
     private void handleFileRequest(Socket clientSocket, String requestPath) throws IOException {
         try (InputStream inputStream = getClass().getResourceAsStream(requestPath)) {
-            if(inputStream == null){
+            if (inputStream == null) {
                 String body = requestPath + " does not exist";
                 HttpResponse response = new HttpResponse("404 Not Found", body);
                 response.write(clientSocket);
@@ -110,7 +110,7 @@ public class HttpServer {
             String contentType = "text/plain";
             if (requestPath.endsWith(".html")) {
                 contentType = "text/html";
-            } else if(requestPath.endsWith(".css")){
+            } else if (requestPath.endsWith(".css")) {
                 contentType = "text/css";
             }
 
@@ -148,14 +148,14 @@ public class HttpServer {
         String[] propKeys = {"dataSource.url", "dataSource.username", "dataSource.password"};
         try (FileReader fileReader = new FileReader("pgr203.properties")) {
             properties.load(fileReader);
-            for(String key : propKeys) {
-                if(!properties.containsKey(key)){
+            for (String key : propKeys) {
+                if (!properties.containsKey(key)) {
                     logger.warn("Properties file missing key: " + key);
-                } else if(properties.getProperty(key).length() == 0){
+                } else if (properties.getProperty(key).length() == 0) {
                     logger.warn("Missing value for property: " + key);
                 }
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.warn("Properties file does not exist - " + e.getMessage());
         }
 

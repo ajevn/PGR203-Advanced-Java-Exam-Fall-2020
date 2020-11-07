@@ -2,6 +2,7 @@ package no.kristiania.database;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -53,16 +54,18 @@ public abstract class AbstractDao<T> {
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, id);
                 statement.executeUpdate();
-            } catch (Exception e){
+            } catch (Exception e) {
                 logger.error("When updating task {} - {}", id, e.getMessage());
             }
         }
     }
 
-    protected T mapRow(ResultSet rs) throws SQLException{
+    protected T mapRow(ResultSet rs) throws SQLException {
         System.out.println(rs.getClass());
 
         System.out.println("Failed in determining type of T");
         return null;
-    };
+    }
+
+    ;
 }

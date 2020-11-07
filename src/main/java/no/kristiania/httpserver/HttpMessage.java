@@ -36,7 +36,7 @@ public class HttpMessage {
                 socket.getInputStream().read();
                 break;
             }
-            line.append((char)c);
+            line.append((char) c);
         }
         return line.toString();
     }
@@ -56,7 +56,7 @@ public class HttpMessage {
         while (!(headerLine = readLine(socket)).isEmpty()) {
             int colonPos = headerLine.indexOf(':');
             String headerName = headerLine.substring(0, colonPos);
-            String headerValue = headerLine.substring(colonPos+1).trim();
+            String headerValue = headerLine.substring(colonPos + 1).trim();
 
             headers.put(headerName, headerValue);
         }

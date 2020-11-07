@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HttpResponse extends HttpMessage{
+public class HttpResponse extends HttpMessage {
     private String startLine;
     private Map<String, String> headers;
     private String body;
@@ -23,25 +23,27 @@ public class HttpResponse extends HttpMessage{
     }
 
 
-    public HttpResponse(String statusCodeAndMessage){
+    public HttpResponse(String statusCodeAndMessage) {
         startLine = "HTTP/1.1 " + statusCodeAndMessage;
         headers = new HashMap<>();
         headers.put("Content-Length", "0");
         headers.put("Connection", "close");
     }
-    public HttpResponse(String statusCodeAndMessage, String body){
-            startLine = "HTTP/1.1 " + statusCodeAndMessage;
-            headers = new HashMap<>();
-            headers.put("Content-Length", String.valueOf(body.length()));
-            headers.put("Connection", "close");
-            this.body = body;
+
+    public HttpResponse(String statusCodeAndMessage, String body) {
+        startLine = "HTTP/1.1 " + statusCodeAndMessage;
+        headers = new HashMap<>();
+        headers.put("Content-Length", String.valueOf(body.length()));
+        headers.put("Connection", "close");
+        this.body = body;
     }
 
-    public void redirect(String redirLocation){
+    public void redirect(String redirLocation) {
         startLine = "HTTP/1.1 302 Redirect";
         headers.put("Location", "/" + redirLocation);
     }
-    public void setContentType(String contentType){
+
+    public void setContentType(String contentType) {
         headers.put("Content-Type", contentType);
     }
 

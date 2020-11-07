@@ -5,7 +5,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectTaskDao extends AbstractDao<ProjectTask>{
+public class ProjectTaskDao extends AbstractDao<ProjectTask> {
 
     public ProjectTaskDao(DataSource dataSource) {
         super(dataSource);
@@ -14,7 +14,7 @@ public class ProjectTaskDao extends AbstractDao<ProjectTask>{
     public void insert(ProjectTask projectTask) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement("INSERT INTO project_tasks (task_name, task_description, task_status)"
-                    + " VALUES(?,?,?)",
+                            + " VALUES(?,?,?)",
                     Statement.RETURN_GENERATED_KEYS)) {
                 statement.setString(1, projectTask.getName());
                 statement.setString(2, projectTask.getDescription());
@@ -30,7 +30,7 @@ public class ProjectTaskDao extends AbstractDao<ProjectTask>{
     }
 
     public void updateTaskStatus(String newStatus, int id) throws SQLException {
-           super.update("UPDATE project_tasks SET task_status = '" + newStatus + "' WHERE id = ?;", id);
+        super.update("UPDATE project_tasks SET task_status = '" + newStatus + "' WHERE id = ?;", id);
     }
 
     public ProjectTask retrieve(int id) throws SQLException {

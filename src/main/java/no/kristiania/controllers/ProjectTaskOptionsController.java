@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 
-public class ProjectTaskOptionsController implements HttpController{
+public class ProjectTaskOptionsController implements HttpController {
     private ProjectTaskDao taskDao;
 
     public ProjectTaskOptionsController(ProjectTaskDao taskDao) {
