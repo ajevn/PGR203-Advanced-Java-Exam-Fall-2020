@@ -1,7 +1,6 @@
 package no.kristiania.httpserver;
 
 import no.kristiania.controllers.*;
-import no.kristiania.database.MemberTask;
 import no.kristiania.database.MemberTaskDao;
 import no.kristiania.database.ProjectMemberDao;
 import no.kristiania.database.ProjectTaskDao;
@@ -28,7 +27,6 @@ public class HttpServer {
     private final ProjectMemberDao projectMemberDao;
     private final ProjectTaskDao projectTaskDao;
     private final MemberTaskDao memberTaskDao;
-    private ServerSocket serverSocket;
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
         projectMemberDao = new ProjectMemberDao(dataSource);
@@ -44,7 +42,8 @@ public class HttpServer {
                 "/api/newMember", new ProjectMemberController(projectMemberDao),
                 "/api/newMemberTask", new CreateMemberTaskController(memberTaskDao, projectMemberDao),
                 "/api/taskOptions", new ProjectTaskOptionsController(projectTaskDao),
-                "/api/memberOptions", new ProjectMemberOptionsController(projectMemberDao)
+                "/api/memberOptions", new ProjectMemberOptionsController(projectMemberDao),
+                "/echo", new EchoRequestController()
         );
 
         ServerSocket serverSocket = new ServerSocket(port);
@@ -59,49 +58,32 @@ public class HttpServer {
         }).start();
     }
 
-    public int getPort() {
-        return serverSocket.getLocalPort();
-    }
-
     private void handleRequest(Socket clientSocket) throws IOException, SQLException {
         HttpMessage request = new HttpMessage(clientSocket);
         String requestLine = request.getStartLine();
         logger.info("Request {} - Port {}", requestLine, clientSocket.getPort());
 
-        String requestMethod = requestLine.split(" ")[0];
         String requestTarget = requestLine.split(" ")[1];
 
         int questionPos = requestTarget.indexOf('?');
         String requestPath = questionPos != -1 ? requestTarget.substring(0, questionPos) : requestTarget;
 
-        if (requestMethod.equals("POST")) {
-            getController(requestPath).handle(request, clientSocket);
+        HttpController controller = controllers.get(requestPath);
+        if (controller != null) {
+            controller.handle(request, clientSocket);
         } else {
-            if (requestPath.equals("/echo")) {
-                handleEchoRequest(clientSocket, requestTarget, questionPos);
-            } else {
-                HttpController controller = controllers.get(requestPath);
-                if (controller != null) {
-                    controller.handle(request, clientSocket);
-                } else {
-                    handleFileRequest(clientSocket, requestPath);
-                }
-            }
+            handleFileRequest(clientSocket, requestPath);
         }
-    }
-
-
-    private HttpController getController(String requestPath) {
-        return controllers.get(requestPath);
     }
 
     private void handleFileRequest(Socket clientSocket, String requestPath) throws IOException {
         try (InputStream inputStream = getClass().getResourceAsStream(requestPath)) {
             if (inputStream == null) {
-                String body = requestPath + " does not exist";
+                String body = "<h1 style='margin-top: 5vh;'>Error 404<h1><h3> <br>We couldn't find this page.</h3><h4>" +
+                        requestPath + " does not exist</h4>" +
+                        "<a href=/index.html>Go to front page</a>";
                 HttpResponse response = new HttpResponse("404 Not Found", body);
                 response.write(clientSocket);
-
                 return;
             }
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -114,6 +96,7 @@ public class HttpServer {
                 contentType = "text/css";
             }
 
+            //Manually writing response for this method.
             String response = "HTTP/1.1 200 OK\r\n" +
                     "Content-Length: " + buffer.toByteArray().length + "\r\n" +
                     "Content-Type: " + contentType + "\r\n" +
@@ -123,23 +106,6 @@ public class HttpServer {
             clientSocket.getOutputStream().write(response.getBytes());
             clientSocket.getOutputStream().write(buffer.toByteArray());
         }
-    }
-
-    private void handleEchoRequest(Socket clientSocket, String requestTarget, int questionPos) throws IOException {
-        String statusCode = "200";
-        String body = "Hello <strong>World</strong>!";
-        if (questionPos != -1) {
-            QueryString queryString = new QueryString(requestTarget.substring(questionPos + 1));
-            if (queryString.getParameter("status") != null) {
-                statusCode = queryString.getParameter("status");
-            }
-            if (queryString.getParameter("body") != null) {
-                body = queryString.getParameter("body");
-            }
-        }
-        HttpResponse response = new HttpResponse(statusCode, body);
-        response.setContentType("text/plain");
-        response.write(clientSocket);
     }
 
     public static void main(String[] args) throws IOException {

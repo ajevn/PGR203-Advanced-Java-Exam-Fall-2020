@@ -24,6 +24,7 @@ class MemberTaskDaoTest {
         memberTaskDao = new MemberTaskDao(dataSource);
     }
 
+
     @Test
     void shouldRetrieveTaskByMemberId() throws SQLException {
         MemberTask member1 = new MemberTask(exampleData(), exampleData());
@@ -31,14 +32,6 @@ class MemberTaskDaoTest {
 
         assertThat(memberTaskDao.retrieveByMemberId(member1.getMemberId())
                 .contains(member1.getMemberId()));
-    }
-    @Test
-    void shouldRetrieveTaskByTaskId() throws SQLException {
-        MemberTask member1 = new MemberTask(exampleData(), exampleData());
-        memberTaskDao.insert(member1);
-
-        assertThat(memberTaskDao.retrieveByMemberId(member1.getTaskId())
-                .contains(member1.getTaskId()));
     }
 
     @Test
@@ -52,6 +45,16 @@ class MemberTaskDaoTest {
                 .extracting(MemberTask::getMemberId)
                 .contains(member1.getMemberId(), member2.getMemberId());
     }
+    @Test
+    void shouldRetrieveTaskByTaskId() throws SQLException {
+        MemberTask member1 = new MemberTask(exampleData(), exampleData());
+        memberTaskDao.insert(member1);
+
+        assertThat(memberTaskDao.retrieveByMemberId(member1.getTaskId())
+                .contains(member1.getTaskId()));
+    }
+
+
 
     private Integer exampleData() {
         Integer[] memberId = {1, 2, 3, 4, 5, 6};
