@@ -23,14 +23,6 @@ public class HttpMessage {
         }
     }
 
-    public HttpMessage(String body){
-        startLine = "HTTP/1.1 200 OK";
-        headers = new HashMap<>();
-        headers.put("Content-Length", String.valueOf(body.length()));
-        headers.put("Connection", "close");
-        this.body = body;
-    }
-
     public HttpMessage() {
         headers = new HashMap<>();
         this.body = null;
@@ -69,17 +61,6 @@ public class HttpMessage {
             headers.put(headerName, headerValue);
         }
         return headers;
-    }
-
-    public void write(Socket clientSocket) throws IOException {
-        clientSocket.getOutputStream().write((startLine + "\r\n").getBytes());
-        for (String headerName : headers.keySet()) {
-            clientSocket.getOutputStream().write((headerName + ": " + headers.get(headerName) + "\r\n").getBytes());
-        }
-        clientSocket.getOutputStream().write(("\r\n").getBytes());
-        if (body != null) {
-            clientSocket.getOutputStream().write(body.getBytes());
-        }
     }
 
 

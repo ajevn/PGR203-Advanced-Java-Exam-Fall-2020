@@ -9,7 +9,7 @@
 
 <h1>All Tasks:</h1>
 <form>
-    <label>Filter tasks by status:</label>
+    <label>Filter by status:</label>
         <select type="text" name="taskStatus" id="taskStatus">
             <option value="">All tasks</option>
             <option value="Todo">Todo</option>
@@ -20,19 +20,28 @@
     <button>Submit</button>
 </form>
 
+<form>
+    <label>Filter by Member:</label>
+        <select type="text" name="memberId" id="memberId">
+            <option value="">All Members</option>
+        </select>
+
+    <button>Submit</button>
+</form>
+
 
 <div id="tasks"></div>
-
+<div>
+    <a href="/index.html">Return to front page</a>
+</div>
 </body>
 <script>
-    fetch("/api/taskOptions").then(response => response.text()).then(html => {
+    fetch("/api/memberOptions").then(response => response.text()).then(html => {
         document.getElementById("memberId").innerHTML += html;
     });
-
     fetch("/api/tasks" + location.search).then(response => response.text()).then(html => {
         document.getElementById("tasks").innerHTML = html;
     });
-
 
 </script>
 </html>

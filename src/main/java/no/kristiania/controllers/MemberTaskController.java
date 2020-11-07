@@ -5,6 +5,7 @@ import no.kristiania.database.MemberTaskDao;
 import no.kristiania.database.ProjectMember;
 import no.kristiania.database.ProjectMemberDao;
 import no.kristiania.httpserver.HttpMessage;
+import no.kristiania.httpserver.HttpResponse;
 import no.kristiania.httpserver.QueryString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,6 @@ import java.util.List;
 
 public class MemberTaskController implements HttpController{
     private MemberTaskDao memberTaskDao;
-    public static final String CONNECTION_CLOSE = "Connection: close\r\n";
     private static final Logger logger = LoggerFactory.getLogger(ProjectMemberController.class);
 
     public MemberTaskController(MemberTaskDao memberTaskDao) {
@@ -41,15 +41,10 @@ public class MemberTaskController implements HttpController{
             memberTaskDao.insert(memberTask);
             logger.info("Member: " + memberTask.getMemberId() +  " - " + memberTask.getTaskId() + " added successfully");
 
-            String body = "Redirecting to main page...";
-            String response = "HTTP/1.1 302 REDIRECT\r\n" +
-                    "Content-Length: " + body.length() + "\r\n" +
-                    CONNECTION_CLOSE +
-                    "Location: /index.html" +
-                    "\r\n" +
-                    body;
+            HttpResponse response = new HttpResponse("302 Redirect");
+            response.redirect("index.html");
+            response.write(clientSocket);
 
-            clientSocket.getOutputStream().write(response.getBytes());
             return;
         }
 
@@ -60,14 +55,8 @@ public class MemberTaskController implements HttpController{
             body += "Member Id: <Strong>" +  memberTask.getMemberId() + " - Task Id: " + memberTask.getTaskId() + "</Strong>";
         }
         body += "</option>";
-        String response = "HTTP/1.1 200 OK\r\n" +
-                "Content-Length: " + body.length() + "\r\n" +
-                "Content-Type: text/html\r\n" +
-                CONNECTION_CLOSE +
-                "\r\n" +
-                body;
 
-        clientSocket.getOutputStream().write(response.getBytes());
-
+        HttpResponse response = new HttpResponse("200 Ok", body);
+        response.write(clientSocket);
     }
 }

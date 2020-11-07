@@ -44,9 +44,7 @@ public class HttpServer {
                 "/api/newMember", new ProjectMemberController(projectMemberDao),
                 "/api/newMemberTask", new CreateMemberTaskController(memberTaskDao, projectMemberDao),
                 "/api/taskOptions", new ProjectTaskOptionsController(projectTaskDao),
-                "/api/memberOptions", new ProjectMemberOptionsController(projectMemberDao),
-                "/api/filterByStatus", new FilterTaskStatusController(projectTaskDao, memberTaskDao, projectMemberDao),
-                "/api/filterByMember", new FilterTaskMemberController(projectTaskDao, memberTaskDao, projectMemberDao)
+                "/api/memberOptions", new ProjectMemberOptionsController(projectMemberDao)
                 );
 
         ServerSocket serverSocket = new ServerSocket(port);
@@ -101,13 +99,9 @@ public class HttpServer {
         try (InputStream inputStream = getClass().getResourceAsStream(requestPath)) {
             if(inputStream == null){
                 String body = requestPath + " does not exist";
-                String response = "HTTP/1.1 404 Not Found\r\n" +
-                        "Content-Length: " + body.length() + "\r\n" +
-                        CONNECTION_CLOSE +
-                        "\r\n" +
-                        body;
+                HttpResponse response = new HttpResponse("404 Not Found", body);
+                response.write(clientSocket);
 
-                clientSocket.getOutputStream().write(response.getBytes());
                 return;
             }
             ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -143,14 +137,9 @@ public class HttpServer {
                 body = queryString.getParameter("body");
             }
         }
-        String response = "HTTP/1.1 " + statusCode + " OK\r\n" +
-                "Content-Length: " + body.length() + "\r\n" +
-                "Content-Type: text/plain\r\n" +
-                CONNECTION_CLOSE +
-                "\r\n" +
-                body;
-
-        clientSocket.getOutputStream().write(response.getBytes());
+        HttpResponse response = new HttpResponse("200 Ok", body);
+        response.setContentType("text/plain");
+        response.write(clientSocket);
     }
 
     public static void main(String[] args) throws IOException {

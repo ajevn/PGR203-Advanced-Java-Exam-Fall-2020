@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MemberTaskDao extends AbstractDao<MemberTask>{
+    private ProjectTaskDao projectTaskDao;
+
     public MemberTaskDao(DataSource dataSource) {
         super(dataSource);
     }
@@ -28,6 +30,10 @@ public class MemberTaskDao extends AbstractDao<MemberTask>{
 
     public List<MemberTask> retrieveByMemberId(int memberId) throws SQLException {
         return super.retrieveList(memberId, "SELECT * FROM member_task WHERE member_id = ?");
+    }
+
+    public List<MemberTask> retrieveByTaskId(int taskId) throws SQLException {
+        return super.retrieveList(taskId, "SELECT * FROM member_task WHERE task_id = ?");
     }
 
     @Override
