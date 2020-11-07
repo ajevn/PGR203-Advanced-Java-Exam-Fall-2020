@@ -3,6 +3,7 @@ package no.kristiania.httpserver;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,11 +24,6 @@ public class HttpMessage {
         }
     }
 
-    public HttpMessage() {
-        headers = new HashMap<>();
-        this.body = null;
-    }
-
     public static String readLine(Socket socket) throws IOException {
         StringBuilder line = new StringBuilder();
         int c;
@@ -46,7 +42,7 @@ public class HttpMessage {
         for (int i = 0; i < contentLength; i++) {
             body.append((char) socket.getInputStream().read());
         }
-        String bodyDecoded = URLDecoder.decode(body.toString(), "UTF-8");
+        String bodyDecoded = URLDecoder.decode(body.toString(), StandardCharsets.UTF_8);
         return bodyDecoded;
     }
 

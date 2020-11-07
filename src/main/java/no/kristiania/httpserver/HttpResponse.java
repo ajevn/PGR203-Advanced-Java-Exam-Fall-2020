@@ -5,23 +5,10 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-public class HttpResponse extends HttpMessage {
+public class HttpResponse {
     private String startLine;
-    private Map<String, String> headers;
+    private final Map<String, String> headers;
     private String body;
-
-    public HttpResponse(Socket socket) throws IOException {
-        startLine = readLine(socket);
-        headers = readHeaders(socket);
-
-        String contentLength = headers.get("Content-Length");
-        if (contentLength != null) {
-            body = readBody(socket, Integer.parseInt(contentLength));
-        } else {
-            body = null;
-        }
-    }
-
 
     public HttpResponse(String statusCodeAndMessage) {
         startLine = "HTTP/1.1 " + statusCodeAndMessage;
@@ -47,12 +34,6 @@ public class HttpResponse extends HttpMessage {
         headers.put("Content-Type", contentType);
     }
 
-
-    /*public HttpResponse() {
-        headers = new HashMap<>();
-        this.body = null;
-    }*/
-
     public void write(Socket clientSocket) throws IOException {
         clientSocket.getOutputStream().write((startLine + "\r\n").getBytes());
         for (String headerName : headers.keySet()) {
@@ -62,5 +43,21 @@ public class HttpResponse extends HttpMessage {
         if (body != null) {
             clientSocket.getOutputStream().write(body.getBytes());
         }
+    }
+    
+    public String getStartLine() {
+        return startLine;
+    }
+
+    public void setStartLine(String startLine) {
+        this.startLine = startLine;
+    }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
+
+    public String getBody() {
+        return body;
     }
 }

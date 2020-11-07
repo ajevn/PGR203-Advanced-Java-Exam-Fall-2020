@@ -10,7 +10,7 @@ import java.net.Socket;
 import java.sql.SQLException;
 
 public class ProjectMemberOptionsController implements HttpController {
-    private ProjectMemberDao memberDao;
+    private final ProjectMemberDao memberDao;
 
     public ProjectMemberOptionsController(ProjectMemberDao memberDao) {
         this.memberDao = memberDao;

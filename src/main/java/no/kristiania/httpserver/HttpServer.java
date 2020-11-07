@@ -22,12 +22,12 @@ public class HttpServer {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
 
-    private Map<String, HttpController> controllers;
+    private final Map<String, HttpController> controllers;
 
     public static final String CONNECTION_CLOSE = "Connection: close\r\n";
-    private ProjectMemberDao projectMemberDao;
-    private ProjectTaskDao projectTaskDao;
-    private MemberTaskDao memberTaskDao;
+    private final ProjectMemberDao projectMemberDao;
+    private final ProjectTaskDao projectTaskDao;
+    private final MemberTaskDao memberTaskDao;
     private ServerSocket serverSocket;
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
@@ -137,7 +137,7 @@ public class HttpServer {
                 body = queryString.getParameter("body");
             }
         }
-        HttpResponse response = new HttpResponse("200 Ok", body);
+        HttpResponse response = new HttpResponse(statusCode, body);
         response.setContentType("text/plain");
         response.write(clientSocket);
     }

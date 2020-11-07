@@ -14,7 +14,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class ProjectMemberController implements HttpController {
-    private ProjectMemberDao projectMemberDao;
+    private final ProjectMemberDao projectMemberDao;
     private static final Logger logger = LoggerFactory.getLogger(ProjectMemberController.class);
 
     public ProjectMemberController(ProjectMemberDao projectMemberDao) {

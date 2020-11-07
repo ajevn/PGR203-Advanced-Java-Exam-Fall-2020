@@ -17,8 +17,8 @@ import java.util.List;
 
 public class CreateMemberTaskController implements HttpController {
     private static final Logger logger = LoggerFactory.getLogger(CreateMemberTaskController.class);
-    private MemberTaskDao memberTaskDao;
-    private ProjectMemberDao projectMemberDao;
+    private final MemberTaskDao memberTaskDao;
+    private final ProjectMemberDao projectMemberDao;
 
     public CreateMemberTaskController(MemberTaskDao memberTaskDao, ProjectMemberDao projectMemberDao) {
         this.memberTaskDao = memberTaskDao;

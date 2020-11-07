@@ -14,9 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProjectTaskController implements HttpController {
-    private ProjectTaskDao projectTaskDao;
-    private ProjectMemberDao projectMemberDao;
-    private MemberTaskDao memberTaskDao;
+    private final ProjectTaskDao projectTaskDao;
+    private final ProjectMemberDao projectMemberDao;
+    private final MemberTaskDao memberTaskDao;
     private static final Logger logger = LoggerFactory.getLogger(ProjectTaskController.class);
 
     public ProjectTaskController(ProjectTaskDao projectTaskDao, MemberTaskDao memberTaskDao, ProjectMemberDao projectMemberDao) {
