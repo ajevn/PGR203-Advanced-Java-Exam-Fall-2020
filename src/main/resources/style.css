@@ -2,7 +2,9 @@ body {
     background-color: bisque;
 
 }
-
+li {
+    padding: 10px 10px;
+}
 #members{
 
 }

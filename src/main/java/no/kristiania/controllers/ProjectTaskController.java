@@ -8,14 +8,16 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectTaskController implements HttpController {
+public class ProjectTaskController implements HttpController{
     private ProjectTaskDao projectTaskDao;
     private ProjectMemberDao projectMemberDao;
     private MemberTaskDao memberTaskDao;
+
     public static final String CONNECTION_CLOSE = "Connection: close\r\n";
     private static final Logger logger = LoggerFactory.getLogger(ProjectTaskController.class);
 
@@ -25,15 +27,13 @@ public class ProjectTaskController implements HttpController {
         this.projectMemberDao = projectMemberDao;
     }
 
-    @Override
     public void handle(HttpMessage request, Socket clientSocket) throws IOException, SQLException {
-        //REQUEST POST /api/tasks HTTP/1.1
         String requestLine = request.getStartLine();
-        System.out.println("REQUEST " + requestLine);
-        //POST
         String requestMethod = requestLine.split(" ")[0];
+        String requestTarget = requestLine.split(" ")[1];
+        int questionPos = requestTarget.indexOf('?');
 
-        //If request is of method POST - run post method
+        //If request is of method POST - Create new task
             if (requestMethod.equals("POST")) {
                 QueryString requestParameter = new QueryString(request.getBody());
 
@@ -56,36 +56,30 @@ public class ProjectTaskController implements HttpController {
                 return;
             }
 
-        // Else if request method is of type GET - Run get method
+        // Else if request method is of type GET - Get tasks and list assigned members
+
+        String filterStatus = new String();
+            if (questionPos != -1) {
+                filterStatus = new QueryString(requestTarget.substring(questionPos+1))
+                        .getParameter("taskStatus");
+                if (filterStatus.contains("-")){
+                    filterStatus = filterStatus.replace("-", " ");
+                }
+            }
+        System.out.println(filterStatus);
+
+        List<ProjectTask> taskList = filterStatus == null ? projectTaskDao.list() : projectTaskDao.retrieveTaskByStatus(filterStatus);
 
         String body = "<ul>";
-        for (ProjectTask projectTask : projectTaskDao.list()) {
-                int taskId = projectTask.getId();
-
-                // Retrieves list of member-task associations relevant to this taskId
-                List<MemberTask> taskList = memberTaskDao.list();
-
-                // Filtering out tasks with ID similar to current iteration of outer for-loop
-                ArrayList<ProjectMember> filteredMembersByTask = new ArrayList<>();
-
-                for (MemberTask task : taskList){
-                    if(task.getTaskId() == (taskId)) {
-                        int memberId = task.getMemberId();
-                        filteredMembersByTask.add(projectMemberDao.retrieve(memberId));
-                    }
+            for (ProjectTask projectTask : taskList) {
+                if (taskList.size() <= 0){
+                    body += "<h1>No tasks matching this status..</h1>";
                 }
-                StringBuilder sb = new StringBuilder();
-                for (ProjectMember member : filteredMembersByTask){
-                    sb.append(member.getFirstName() + ", " + member.getLastName() + " <br> ");
-                }
+                body = listAssignedMembers( projectTask, body);
 
-                body += "<li>" + "<Strong>Task: </Strong>" + projectTask.getName()+ " <br> <Strong>Description:</Strong> " + projectTask.getDescription() + " <br> " + "<Strong>Status:</Strong> " + projectTask.getStatus() +
-                        "<br> <Strong>Assigned to:<br></Strong> " +
-                        sb +
-                        "</li>";
             }
-
         body += "</ul>";
+
         String response = "HTTP/1.1 200 OK\r\n" +
                 "Content-Length: " + body.length() + "\r\n" +
                 "Content-Type: text/html\r\n" +
@@ -94,5 +88,32 @@ public class ProjectTaskController implements HttpController {
                 body;
 
         clientSocket.getOutputStream().write(response.getBytes());
+    }
+
+
+
+    public String listAssignedMembers(ProjectTask projectTask, String body) throws SQLException {
+                int taskId = projectTask.getId();
+                // Retrieves list of member-task associations relevant to this taskId
+                List<MemberTask> taskList = memberTaskDao.list();
+                // Filtering out tasks with ID similar to current iteration of outer for-loop
+                ArrayList<ProjectMember> filteredMembersByTask = new ArrayList<>();
+
+                    for (MemberTask task : taskList){
+                        if(task.getTaskId() == (taskId)) {
+                            int memberId = task.getMemberId();
+                            filteredMembersByTask.add(projectMemberDao.retrieve(memberId));
+                        }
+                    }
+                StringBuilder sb = new StringBuilder();
+                    for (ProjectMember member : filteredMembersByTask){
+                        sb.append(member.getFirstName() + ", " + member.getLastName() + " <br> ");
+                    }
+
+                body += "<li>" + "<Strong>Task: </Strong>" + projectTask.getName()+ " <br> <Strong>Description:</Strong> " + projectTask.getDescription() + " <br> " + "<Strong>Status:</Strong> " + projectTask.getStatus() +
+                        "<br> <Strong>Assigned to:<br></Strong> " +
+                        sb +
+                        "</li>";
+        return body;
     }
 }

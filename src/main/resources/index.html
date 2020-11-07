@@ -12,7 +12,6 @@
 <strong>Members</strong>
 <div id="members" class="grid-container">
 </div>
-Tasks
 <div id="tasks" class="grid-container">
 
 </div>
@@ -39,9 +38,6 @@ Tasks
 <script>
     fetch("/api/members").then(response => response.text()).then(html => {
         document.getElementById("members").innerHTML = html;
-    });
-    fetch("/api/tasks").then(response => response.text()).then(html => {
-        document.getElementById("tasks").innerHTML = html;
     });
 </script>
 </html>

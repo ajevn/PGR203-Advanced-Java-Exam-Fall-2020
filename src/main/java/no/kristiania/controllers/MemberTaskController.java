@@ -14,12 +14,12 @@ import java.net.Socket;
 import java.sql.SQLException;
 import java.util.List;
 
-public class ProjectMemberTaskController implements HttpController{
+public class MemberTaskController implements HttpController{
     private MemberTaskDao memberTaskDao;
     public static final String CONNECTION_CLOSE = "Connection: close\r\n";
     private static final Logger logger = LoggerFactory.getLogger(ProjectMemberController.class);
 
-    public ProjectMemberTaskController(MemberTaskDao memberTaskDao) {
+    public MemberTaskController(MemberTaskDao memberTaskDao) {
         this.memberTaskDao = memberTaskDao;
     }
 

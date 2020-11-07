@@ -7,46 +7,31 @@
 </head>
 <body>
 
-<h1>Tasks:</h1>
-<form id="statusFilterForm" method="post" action="/api/filterTask">
-    <label>Sort task by status:</label>
-    <select type="text" name="taskStatus" id="taskStatus">
-        <option selected disabled hidden style="..." value=""></option>
-        <option value="Todo">Todo</option>
-        <option value="In Progress">In Progress</option>
-        <option value="Completed">Completed</option>
-        <option value="Cancelled">Cancelled</option>
-    </select>
+<h1>All Tasks:</h1>
+<form>
+    <label>Filter tasks by status:</label>
+        <select type="text" name="taskStatus" id="taskStatus">
+            <option value="">All tasks</option>
+            <option value="Todo">Todo</option>
+            <option value="In-Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+        </select>
     <button>Submit</button>
 </form>
 
-<form id="memberFilterForm" method="post" action="/api/filterTask">
-    <label>Sort task by member:</label>
-    <select type="text" name="memberId" id="memberId">
-        <option selected disabled hidden style="..." value=""></option>
-    </select>
-    <button>Submit</button>
-</form>
 
 <div id="tasks"></div>
 
 </body>
 <script>
-    fetch("/api/memberOptions").then(response => response.text()).then(html => {
-        document.getElementById("memberId").innerHTML = html;
+    fetch("/api/taskOptions").then(response => response.text()).then(html => {
+        document.getElementById("memberId").innerHTML += html;
     });
 
-    fetch("/api/tasks").then(response => response.text()).then(html => {
+    fetch("/api/tasks" + location.search).then(response => response.text()).then(html => {
         document.getElementById("tasks").innerHTML = html;
     });
-
-    var form = document.getElementById("filterForm");
-    form.addEventListener('submit', handleForm);
-    function handleForm(event) {
-        event.preventDefault();
-        form.submit();
-    }
-
 
 
 </script>

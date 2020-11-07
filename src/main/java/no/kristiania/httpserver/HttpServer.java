@@ -45,7 +45,8 @@ public class HttpServer {
                 "/api/newMemberTask", new CreateMemberTaskController(memberTaskDao, projectMemberDao),
                 "/api/taskOptions", new ProjectTaskOptionsController(projectTaskDao),
                 "/api/memberOptions", new ProjectMemberOptionsController(projectMemberDao),
-                "/api/filterTask", new FilterTaskController(projectTaskDao, memberTaskDao, projectMemberDao)
+                "/api/filterByStatus", new FilterTaskStatusController(projectTaskDao, memberTaskDao, projectMemberDao),
+                "/api/filterByMember", new FilterTaskMemberController(projectTaskDao, memberTaskDao, projectMemberDao)
                 );
 
         ServerSocket serverSocket = new ServerSocket(port);
@@ -67,7 +68,7 @@ public class HttpServer {
     private void handleRequest(Socket clientSocket) throws IOException, SQLException {
         HttpMessage request = new HttpMessage(clientSocket);
         String requestLine = request.getStartLine();
-        System.out.println("REQUEST " + requestLine);
+        logger.info("Request {} - Port {}", requestLine, clientSocket.getPort());
 
         String requestMethod = requestLine.split(" ")[0];
         String requestTarget = requestLine.split(" ")[1];
@@ -81,15 +82,15 @@ public class HttpServer {
             if (requestPath.equals("/echo")) {
                 handleEchoRequest(clientSocket, requestTarget, questionPos);
             } else {
-                HttpController controller = controllers.get(requestPath);
-                if (controller != null) {
-                    controller.handle(request, clientSocket);
-                } else {
-                    handleFileRequest(clientSocket, requestPath);
+                    HttpController controller = controllers.get(requestPath);
+                    if (controller != null) {
+                        controller.handle(request, clientSocket);
+                    } else {
+                        handleFileRequest(clientSocket, requestPath);
+                    }
                 }
             }
         }
-    }
 
 
     private HttpController getController(String requestPath) {
