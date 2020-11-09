@@ -1,9 +1,6 @@
 package no.kristiania.controllers;
 
-import no.kristiania.database.MemberTask;
-import no.kristiania.database.MemberTaskDao;
-import no.kristiania.database.ProjectMember;
-import no.kristiania.database.ProjectMemberDao;
+import no.kristiania.database.*;
 import no.kristiania.httpserver.HttpMessage;
 import no.kristiania.httpserver.HttpResponse;
 import no.kristiania.httpserver.QueryString;
@@ -48,11 +45,10 @@ public class CreateMemberTaskController implements HttpController {
             return;
         }
 
-        String body = "ERROR 422 Unprocessable Entity - Member Already Assigned to Task";
+        HttpErrorMessage errorMessage = new HttpErrorMessage(422, "Unprocessable Entity", "Member Already Assigned to this Task");
+        String body = errorMessage.getInfoMessage();
         HttpResponse response = new HttpResponse("422 Unprocessable Entity", body);
         response.write(clientSocket);
-
-        return;
     }
 
     private boolean checkIfAssignmentExists(Integer memberId, Integer taskId) throws SQLException {

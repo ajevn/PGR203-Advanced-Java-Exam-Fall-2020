@@ -1,6 +1,7 @@
 package no.kristiania.httpserver;
 
 import no.kristiania.controllers.*;
+import no.kristiania.database.HttpErrorMessage;
 import no.kristiania.database.MemberTaskDao;
 import no.kristiania.database.ProjectMemberDao;
 import no.kristiania.database.ProjectTaskDao;
@@ -8,7 +9,6 @@ import org.flywaydb.core.Flyway;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import javax.sql.DataSource;
 import java.io.*;
 import java.net.ServerSocket;
@@ -18,20 +18,14 @@ import java.util.Map;
 import java.util.Properties;
 
 public class HttpServer {
-
     private static final Logger logger = LoggerFactory.getLogger(HttpServer.class);
-
     private final Map<String, HttpController> controllers;
-
     public static final String CONNECTION_CLOSE = "Connection: close\r\n";
-    private final ProjectMemberDao projectMemberDao;
-    private final ProjectTaskDao projectTaskDao;
-    private final MemberTaskDao memberTaskDao;
 
     public HttpServer(int port, DataSource dataSource) throws IOException {
-        projectMemberDao = new ProjectMemberDao(dataSource);
-        projectTaskDao = new ProjectTaskDao(dataSource);
-        memberTaskDao = new MemberTaskDao(dataSource);
+        ProjectMemberDao projectMemberDao = new ProjectMemberDao(dataSource);
+        ProjectTaskDao projectTaskDao = new ProjectTaskDao(dataSource);
+        MemberTaskDao memberTaskDao = new MemberTaskDao(dataSource);
 
 
         controllers = Map.of(
@@ -64,7 +58,6 @@ public class HttpServer {
         logger.info("Request {} - Port {}", requestLine, clientSocket.getPort());
 
         String requestTarget = requestLine.split(" ")[1];
-
         int questionPos = requestTarget.indexOf('?');
         String requestPath = questionPos != -1 ? requestTarget.substring(0, questionPos) : requestTarget;
 
@@ -79,9 +72,9 @@ public class HttpServer {
     private void handleFileRequest(Socket clientSocket, String requestPath) throws IOException {
         try (InputStream inputStream = getClass().getResourceAsStream(requestPath)) {
             if (inputStream == null) {
-                String body = "<h1 style='margin-top: 5vh;'>Error 404<h1><h3> <br>We couldn't find this page.</h3><h4>" +
-                        requestPath + " does not exist</h4>" +
-                        "<a href=/index.html>Go to front page</a>";
+                HttpErrorMessage errorMessage = new HttpErrorMessage(requestPath, 404, "Error");
+                String body = errorMessage.getErrorMessage();
+
                 HttpResponse response = new HttpResponse("404 Not Found", body);
                 response.write(clientSocket);
                 return;

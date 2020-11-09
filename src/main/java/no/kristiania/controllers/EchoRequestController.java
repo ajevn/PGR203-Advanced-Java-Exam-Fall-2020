@@ -17,18 +17,19 @@ public class EchoRequestController implements HttpController{
 
         //Handles echo requests - Example: localhost:8080/echo?body=hello
         String statusCode = "200";
-        String body = "Hello <strong>World</strong>!";
+        String body = "<h2>Echo:</h2><h4> ";
         if (questionPos != -1) {
             QueryString queryString = new QueryString(requestTarget.substring(questionPos + 1));
             if (queryString.getParameter("status") != null) {
                 statusCode = queryString.getParameter("status");
             }
             if (queryString.getParameter("body") != null) {
-                body = queryString.getParameter("body");
+                body += queryString.getParameter("body");
             }
         }
+        body += "</h4>";
         HttpResponse response = new HttpResponse(statusCode, body);
-        response.setContentType("text/plain");
+        response.setContentType("text/html");
         response.write(clientSocket);
     }
 }
