@@ -32,7 +32,17 @@ For å få prosjektet til å kjøre følg punktene under.
 
 1. Bygg programmet gjennom Maven Package. Dette gjøres ved å skrive "mvn package" i terminalen eller å velge "Package" under Maven -> Lifecycle. (Dersom programmet har vært bygget tidligere kan det være lurt å gjøre en "Clean" før "Package".
 
-2. Skriv kommandoen: 'java -jar *filnavn*' i terminalen for å eksekvere den pakkede JAR filen.
+2. JAR filen er nå pakket og kan eksekveres i en egen mappe. I mappen må det være en properties fil ved navn "pgr203.properties".
+    - Denne har til oppgave å servere et sett med verdier til programmet slik at lokal PostgreSQL konfigurasjon fungerer med programmet.
+
+3. pgr203.properties fil må ha følgende verdier fra brukerens lokale PostgreSQL database:
+    - dataSource.url='url'
+    - dataSource.username='brukernavn'
+    - dataSource.password='passord'
+
+4. Programmet kan nå eksekveres og leser automatisk verdiene fra pgr203.properties så fremt det ligger i samme filmappe.
+    - Skriv kommandoen: 'java -jar '*filnavn-på-JAR*'' i terminalen for å eksekvere den pakkede JAR filen og starte serveren.
+ 
 
 ### Funksjonalitet i programmet
 

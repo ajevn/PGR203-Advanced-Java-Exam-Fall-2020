@@ -1,5 +1,8 @@
 package no.kristiania.httpserver;
 
+import no.kristiania.controllers.CreateMemberTaskController;
+import no.kristiania.database.MemberTask;
+import no.kristiania.database.ProjectTaskDao;
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +23,7 @@ class HttpServerTest {
 
     @BeforeEach
     void setUp() {
+        ProjectTaskDao projectTaskDao;
         dataSource = new JdbcDataSource();
         dataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
         Flyway.configure().dataSource(dataSource).load().migrate();
@@ -40,49 +44,57 @@ class HttpServerTest {
     }
 
     @Test
-    void shouldReturnContentLength() throws IOException {
+    void shouldHandleNonexistentRequestTarget() throws IOException {
         new HttpServer(10003, dataSource);
-        HttpClient client = new HttpClient("localhost", 10003, "/echo?body=HelloWorld");
-        assertEquals("10", client.getResponseHeader("Content-Length"));
+        HttpClient client = new HttpClient("localhost", 10003, "/index.ht");
+        assertEquals(404, client.getStatusCode());
+    }
+
+    @Test
+    void shouldReturnContentLength() throws IOException {
+        new HttpServer(10004, dataSource);
+        HttpClient client = new HttpClient("localhost", 10004, "/echo?body=HelloWorld");
+        assertEquals("34", client.getResponseHeader("Content-Length"));
     }
 
     @Test
     void shouldReturnResponseBody() throws IOException {
-        new HttpServer(10004, dataSource);
-        HttpClient client = new HttpClient("localhost", 10004, "/echo?body=HelloWorld");
-        assertEquals("HelloWorld", client.getResponseBody());
+        new HttpServer(10005, dataSource);
+        HttpClient client = new HttpClient("localhost", 10005, "/echo?body=HelloWorld");
+        assertEquals("<h2>Echo:</h2><h4> HelloWorld</h4>", client.getResponseBody());
     }
 
     @Test
     void shouldReturnFileFromDisk() throws IOException {
-        HttpServer server = new HttpServer(10005, dataSource);
+        HttpServer server = new HttpServer(10006, dataSource);
         File contentRoot = new File("target/test-classes");
 
         String fileContent = "Hello World " + new Date();
         Files.writeString(new File(contentRoot, "test.txt").toPath(), fileContent);
 
-        HttpClient client = new HttpClient("localhost", 10005, "/test.txt");
+        HttpClient client = new HttpClient("localhost", 10006, "/test.txt");
         assertEquals(fileContent, client.getResponseBody());
         assertEquals("text/plain", client.getResponseHeader("Content-Type"));
     }
 
     @Test
     void shouldReturnCorrectContentType() throws IOException {
-        HttpServer server = new HttpServer(10006, dataSource);
+        HttpServer server = new HttpServer(10007, dataSource);
         File contentRoot = new File("target/test-classes");
 
         Files.writeString(new File(contentRoot, "index.html").toPath(), "<h2>Hello World</h2>");
 
-        HttpClient client = new HttpClient("localhost", 10006, "/index.html");
+        HttpClient client = new HttpClient("localhost", 10007, "/index.html");
         assertEquals("text/html", client.getResponseHeader("Content-Type"));
     }
 
+
     @Test
     void shouldReturn404IfFileNotFound() throws IOException {
-        HttpServer server = new HttpServer(10007, dataSource);
+        HttpServer server = new HttpServer(10008, dataSource);
         File contentRoot = new File("target/");
 
-        HttpClient client = new HttpClient("localhost", 10007, "/notFound.txt");
+        HttpClient client = new HttpClient("localhost", 10008, "/notFound.txt");
         assertEquals(404, client.getStatusCode());
     }
 }

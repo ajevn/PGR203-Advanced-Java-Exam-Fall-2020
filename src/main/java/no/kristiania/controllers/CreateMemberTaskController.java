@@ -51,7 +51,7 @@ public class CreateMemberTaskController implements HttpController {
         response.write(clientSocket);
     }
 
-    private boolean checkIfAssignmentExists(Integer memberId, Integer taskId) throws SQLException {
+    public boolean checkIfAssignmentExists(Integer memberId, Integer taskId) throws SQLException {
         List<MemberTask> taskList = memberTaskDao.list();
 
         for (MemberTask task : taskList) {
