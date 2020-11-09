@@ -36,7 +36,8 @@ public class HttpServer {
                 "/api/newMemberTask", new MemberTaskController(memberTaskDao, projectMemberDao),
                 "/api/taskOptions", new ProjectTaskOptionsController(projectTaskDao),
                 "/api/memberOptions", new ProjectMemberOptionsController(projectMemberDao),
-                "/echo", new EchoRequestController()
+                "/echo", new OtherRequestPathController(),
+                "/", new OtherRequestPathController()
         );
 
         ServerSocket serverSocket = new ServerSocket(port);
@@ -74,7 +75,7 @@ public class HttpServer {
     private void handleFileRequest(Socket clientSocket, String requestPath) throws IOException {
         try (InputStream inputStream = getClass().getResourceAsStream(requestPath)) {
             if (inputStream == null) {
-                HttpErrorMessage errorMessage = new HttpErrorMessage(requestPath, 404, "Error");
+                HttpErrorMessage errorMessage = new HttpErrorMessage(requestPath, 404, "Not Found");
                 String body = errorMessage.getErrorMessage();
 
                 HttpResponse response = new HttpResponse("404 Not Found", body);
