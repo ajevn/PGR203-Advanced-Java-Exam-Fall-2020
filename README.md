@@ -14,7 +14,7 @@
 
 <!-- om-prosjektet -->
 ## Om Prosjektet
-* Andreas Jevnaker - kandidatnummer 10086
+* Medlem 1 - kandidatnummer 10086
 
 Dette prosjektet setter opp en lokal webserver der brukeren kan utføre handlinger mot serveren. Serveren demonstrerer hvordan server og klient-siden snakker med hverandre via forskjellige typer requests, herunder Post og Get forespørsler som følger RFC7230 HTTP standard. (https://tools.ietf.org/html/rfc7231). Prosjektet benytter PostgreSQL som databaseløsning. Funksjonaliteten for dette er bygget inn i programmet og gjennom JDBC(Java Database Connectivity) i egne DAO(Data Access Object). Programmet kan gjennom bruk av kontrollere lagre, hente og filtrere data basert på forespørsler fra klientet. 
 
@@ -43,9 +43,25 @@ For å få prosjektet til å kjøre følg punktene under.
 4. Programmet kan nå eksekveres og leser automatisk verdiene fra pgr203.properties så fremt det ligger i samme filmappe.
     - Skriv kommandoen: 'java -jar '*filnavn-på-JAR*'' i terminalen for å eksekvere den pakkede JAR filen og starte serveren.
  
+### Bruke Programmet
+Ettersom jeg har fokusert lite på brukervennlighet er programmet nokså enkelt å navigere.
+- Trykk på "Add new project member" -> Her kan man legge til nye brukere med fornavn, etternavn og epost.
+    - Disse blir dekodet til utf-8 i programmet og håndterer derfor norske tegn og symbolder på korrekt måte før det lagres i databasen.
+- Trykk på "Add new task" for å legge til oppgave med navn, beskrivelse og initiell status.
+- Trykk på "List tasks" for å få en liste over alle oppgavene i databasen. Disse viser også oppdatert status og medlemmene som er tildelt oppgaven.
+    - Det er på denne siden mulig å filtrere oppgaver på medlem og status. Nedtrekksmenyene er oppdatert med seneste data fra databasen.
+    - Det blir også vist en informasjonsmelding dersom det ikke finnes treff på filtreringen.
+- Trykk på "Update Task" for å oppdatere status på en valgfri oppgave.
+- Trykk på "Assign task to member" for å tildele en oppgave til et medlem. Begge nedtrekksmenyer er oppdatert med data fra databasen.
+### Programdesign
+Programmet oppfyller alle kravene spesifisert som minstekrav i oppgaven. Programmet gir en detaljert logg over requests, nye tilkoblinger og feil/infomeldinger forbundet med programmet.
+Jeg har også gjort noen av tilleggskravene og vil liste disse under.
+- Håndtering av request target blir gjort og brukeren vil få dynamiske error meldinger rendret som HTML. Håndterer blant annet
+Feil i URL - F.eks localhost:8080/index.ht (Gir statuskode 404 og knapp for redirect til hovedside).
+Dersom man prøver å tildele en oppgave til et medlem som allerede er tildelt oppgaven (Gir statuskode 422 unprocessable entity og informerer brukeren om dette)
 
-### Funksjonalitet i programmet
+- UML diagram for hver klasse i tillegg til datamodell for hvordan flyten av data gjennomføres i programmet. (Finnes i mappe "Dokumentasjon")
 
-
+- Har til dels klart 
 <!-- evaluering -->
 ## Refleksjoner rundt prosjektet
