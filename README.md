@@ -16,11 +16,11 @@
 ## Om Prosjektet
 * Andreas Jevnaker - kandidatnummer 10086
 
-Dette prosjektet setter opp en HTTP Server og kobler til en database som brukere kan kobler til via en HTTP Klient. Serveren demonstrerer hvordan Server og Client snakker med hverandre via REQUEST linjer som (GET, POST) på REQUEST Target som da svarer med /echo og status protocol (200, 404, 401, 500) og til slutt ender med status melding. Skal også demonstrere hvordan dataen blir skrevet, lagret i en database og sendt tilbake til brukeren.
+Dette prosjektet setter opp en lokal webserver der brukeren kan utføre handlinger mot serveren gjennom klient funksjonalitet i programmet. Serveren demonstrerer hvordan server og klient-siden snakker med hverandre via forskjellige typer requests, herunder Post og Get forespørsler som følger RFC7230 HTTP standard. (https://tools.ietf.org/html/rfc7231). Prosjektet benytter PostgreSQL som databaseløsning. Funksjonaliteten for dette er bygget inn i programmet og gjennom JDBC(Java Database Connectivity) i egne DAO(Data Access Object) kan programmet gjennom bruk av kontrollere lagre, hente og filtrere data basert på forespørsler fra klientet. 
 
-Prosjektet bygges via maven -> lifecycle -> package - SERVER Start Viktig å velge versjonen som ender med shaded.jar da denne er bygget på riktig måte.
+Prosjektet leverer et enkelt system for håndtering av prosjektoppgaver og man kan legge til ansatte, oppgaver og oppgavestatus. Det er mulig å tilegne ansatte til oppgaver og man kan endre oppgavestatus underveis. Prosjektet er laget med minimalt fokus på brukervennlighet da dette ikke var prioritert i oppgaveteksten.
 
-Brukeren skal kunne legge til flere brukere via newWorker.html som kjøres via localHost, der de 3 parameterene (firstNamer, lastName, email) blir lagret i ProjectMemberDao og oppdatert til Postgres databasen. Postgres databasen lagrer da de dataen den blir tilsendt og skriver de ut i en ProjectMember liste som da er et array med de forskjellige medlemene (firstName, lastName, email).
+Prosjektet er utviklet alene da arbeidsinnsatsen innledningsvis i gruppen på 2 var veldig ujevn. Etter litt diskusjon og veiledning kom vi frem til at den beste løsningen ville være å dele oss opp og levere som enkeltpersoner. Grunnet ensidig deltagelse over en relativt lang periode innledningsvis ble vi enige om at det ville være en fordel for begge parter å dele oss opp i 2, der den andre personen lagde sin egen oppgave. Vi ble enige om at dette ville resultere i bedre læring fremfor å prøve å hoppe inn i prosjektet jeg allerede hadde laget nokså mye av allerede. Vi har siden hatt god kommunikasjon og har i den siste tiden før fristen sittet sammen i kohort gruppen mens vi jobbet. Vi har behold noen av aspektene ved samarbeidet og jeg har tilbytt mine erfaringer og tips fra utviklingsprosessen.
 
 
 <!-- komme-i-gang -->
