@@ -1,5 +1,6 @@
 package no.kristiania.httpserver;
 
+import no.kristiania.database.ProjectTask;
 import no.kristiania.database.ProjectTaskDao;
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
@@ -9,13 +10,14 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.sql.SQLException;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HttpServerTest {
-
+    private ProjectTaskDao taskDao;
     private JdbcDataSource dataSource;
 
     @BeforeEach
@@ -24,6 +26,22 @@ class HttpServerTest {
         dataSource = new JdbcDataSource();
         dataSource.setUrl("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
         Flyway.configure().dataSource(dataSource).load().migrate();
+
+        taskDao = new ProjectTaskDao(dataSource);
+    }
+    @Test
+    void checkFilterTaskByStatus() throws IOException, SQLException {
+        HttpServer server = new HttpServer(10009, dataSource);
+        ProjectTask task1 = new ProjectTask("Clean", "Something", "Completed");
+        ProjectTask task2 = new ProjectTask("Clean", "Something", "Cancelled");
+        taskDao.insert(task1);
+        taskDao.insert(task2);
+
+        //Checks for no return on status "Todo" - Previosly added
+        HttpClient client = new HttpClient("localhost", 10009, "/api/tasks?taskStatus=Todo" );
+
+        //<ul><li><Strong>Task: </Strong>Clean <br> <Strong>Description:</Strong> Something <br> <Strong>Status:</Strong> Completed<br> <Strong>Assigned to:<br></Strong> </li></ul>
+        assertEquals("<ul><h3> No tasks matching status: Todo</ul>", client.getResponseBody());
     }
 
     @Test

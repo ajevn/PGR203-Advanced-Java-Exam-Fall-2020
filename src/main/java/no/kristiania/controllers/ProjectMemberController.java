@@ -2,8 +2,8 @@ package no.kristiania.controllers;
 
 import no.kristiania.database.ProjectMember;
 import no.kristiania.database.ProjectMemberDao;
-import no.kristiania.httpserver.messages.HttpMessage;
-import no.kristiania.httpserver.messages.HttpResponse;
+import no.kristiania.httpserver.HttpMessage;
+import no.kristiania.httpserver.HttpResponse;
 import no.kristiania.httpserver.QueryString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

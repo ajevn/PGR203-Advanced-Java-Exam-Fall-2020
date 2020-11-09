@@ -1,4 +1,4 @@
-package no.kristiania.httpserver.messages;
+package no.kristiania.httpserver;
 
 import java.io.IOException;
 import java.net.Socket;

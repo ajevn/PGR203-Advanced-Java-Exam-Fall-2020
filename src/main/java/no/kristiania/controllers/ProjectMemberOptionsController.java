@@ -2,8 +2,8 @@ package no.kristiania.controllers;
 
 import no.kristiania.database.ProjectMember;
 import no.kristiania.database.ProjectMemberDao;
-import no.kristiania.httpserver.messages.HttpMessage;
-import no.kristiania.httpserver.messages.HttpResponse;
+import no.kristiania.httpserver.HttpMessage;
+import no.kristiania.httpserver.HttpResponse;
 
 import java.io.IOException;
 import java.net.Socket;

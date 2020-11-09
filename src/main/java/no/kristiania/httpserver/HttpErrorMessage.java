@@ -1,4 +1,4 @@
-package no.kristiania.httpserver.messages;
+package no.kristiania.httpserver;
 
 public class HttpErrorMessage {
     int errorCode;

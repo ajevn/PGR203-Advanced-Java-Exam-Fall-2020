@@ -1,4 +1,4 @@
-package no.kristiania.httpserver.messages;
+package no.kristiania.httpserver;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -62,10 +62,6 @@ public class HttpMessage {
 
     public String getStartLine() {
         return startLine;
-    }
-
-    public void setStartLine(String startLine) {
-        this.startLine = startLine;
     }
 
     public Map<String, String> getHeaders() {

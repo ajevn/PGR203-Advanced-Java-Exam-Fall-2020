@@ -1,7 +1,5 @@
 package no.kristiania.httpserver;
 
-import no.kristiania.httpserver.messages.HttpMessage;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
@@ -38,11 +36,6 @@ public class HttpClient {
 
         String[] responseLineParts = responseLine.split(" ");
         statusCode = Integer.parseInt(responseLineParts[1]);
-    }
-
-    public static void main(String[] args) throws IOException {
-        HttpClient client = new HttpClient("urlecho.appspot.com", 80, "/echo?status=404&Content-Type=text%2Fhtml&body=Hello+world");
-        System.out.println(client.getResponseBody());
     }
 
     public int getStatusCode() {
