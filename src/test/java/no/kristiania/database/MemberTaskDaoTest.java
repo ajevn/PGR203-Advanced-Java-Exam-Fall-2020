@@ -56,9 +56,8 @@ class MemberTaskDaoTest {
 
 
 
-    private Integer exampleData() {
-        Integer[] memberId = {1, 2, 3, 4, 5, 6};
-        return memberId[random.nextInt(memberId.length)];
+    private int exampleData() {
+        return random.nextInt(1000);
     }
 
 }

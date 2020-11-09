@@ -16,6 +16,7 @@ public class ProjectTaskOptionsController implements HttpController {
         this.taskDao = taskDao;
     }
 
+    // Returns all tasks as <option> elements - Being used in drop-down list in HTML files.
     @Override
     public void handle(HttpMessage request, Socket clientSocket) throws IOException, SQLException {
         HttpResponse response = new HttpResponse("200 Ok", getBody());

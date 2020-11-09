@@ -37,6 +37,7 @@ public class ProjectTaskDao extends AbstractDao<ProjectTask> {
         return super.retrieve(id, "SELECT * FROM project_tasks WHERE id = ?");
     }
 
+    // Creating new retrieve method to allow for String parameter
     public List<ProjectTask> retrieveTaskByStatus(String status) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement("SELECT * FROM project_tasks WHERE task_status = ?")) {

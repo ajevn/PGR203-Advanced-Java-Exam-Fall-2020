@@ -14,13 +14,13 @@
 
 <!-- om-prosjektet -->
 ## Om Prosjektet
-* Andreas Jevnaker - kandidatnummer 10086
+* Medlem 1 - kandidatnummer 10086
 
-Dette prosjektet setter opp en HTTP Server og kobler til en database som brukere kan kobler til via en HTTP Klient. Serveren demonstrerer hvordan Server og Client snakker med hverandre via REQUEST linjer som (GET, POST) på REQUEST Target som da svarer med /echo og status protocol (200, 404, 401, 500) og til slutt ender med status melding. Skal også demonstrere hvordan dataen blir skrevet, lagret i en database og sendt tilbake til brukeren.
+Dette prosjektet setter opp en lokal webserver der brukeren kan utføre handlinger mot serveren. Serveren demonstrerer hvordan server og klient-siden snakker med hverandre via forskjellige typer requests, herunder Post og Get forespørsler som følger RFC7230 HTTP standard. (https://tools.ietf.org/html/rfc7231). Prosjektet benytter PostgreSQL som databaseløsning. Funksjonaliteten for dette er bygget inn i programmet og gjennom JDBC(Java Database Connectivity) i egne DAO(Data Access Object). Programmet kan gjennom bruk av kontrollere lagre, hente og filtrere data basert på forespørsler fra klientet. 
 
-Prosjektet bygges via maven -> lifecycle -> package - SERVER Start Viktig å velge versjonen som ender med shaded.jar da denne er bygget på riktig måte.
+Prosjektet leverer et enkelt system for håndtering av prosjektoppgaver og man kan legge til ansatte, oppgaver og oppgavestatus. Det er mulig å tilegne ansatte til oppgaver og man kan endre oppgavestatus underveis. Prosjektet er laget med minimalt fokus på brukervennlighet da dette ikke var prioritert i oppgaveteksten.
 
-Brukeren skal kunne legge til flere brukere via newWorker.html som kjøres via localHost, der de 3 parameterene (firstNamer, lastName, email) blir lagret i ProjectMemberDao og oppdatert til Postgres databasen. Postgres databasen lagrer da de dataen den blir tilsendt og skriver de ut i en ProjectMember liste som da er et array med de forskjellige medlemene (firstName, lastName, email).
+Prosjektet er utviklet alene da arbeidsinnsatsen innledningsvis i gruppen på 2 var veldig ujevn. Etter litt diskusjon og veiledning kom vi frem til at den beste løsningen ville være å dele oss opp og levere som enkeltpersoner. Grunnet ensidig deltagelse over en relativt lang periode innledningsvis ble vi enige om at det ville være en fordel for begge parter å dele oss opp i 2, der den andre personen lagde sin egen oppgave. Vi ble enige om at dette ville resultere i bedre læring fremfor å prøve å hoppe inn i prosjektet jeg allerede hadde laget nokså mye av allerede. Vi har siden hatt god kommunikasjon og har i den siste tiden før fristen sittet sammen i kohort gruppen mens vi jobbet. Vi har behold noen av aspektene ved samarbeidet og jeg har tilbytt mine erfaringer og tips fra utviklingsprosessen.
 
 
 <!-- komme-i-gang -->
@@ -32,10 +32,36 @@ For å få prosjektet til å kjøre følg punktene under.
 
 1. Bygg programmet gjennom Maven Package. Dette gjøres ved å skrive "mvn package" i terminalen eller å velge "Package" under Maven -> Lifecycle. (Dersom programmet har vært bygget tidligere kan det være lurt å gjøre en "Clean" før "Package".
 
-2. Skriv kommandoen: 'java -jar *filnavn*' i terminalen for å eksekvere den pakkede JAR filen.
+2. JAR filen er nå pakket og kan eksekveres i en egen mappe. I mappen må det være en properties fil ved navn "pgr203.properties".
+    - Denne har til oppgave å servere et sett med verdier til programmet slik at lokal PostgreSQL konfigurasjon fungerer med programmet.
 
-### Funksjonalitet i programmet
+3. pgr203.properties fil må ha følgende verdier fra brukerens lokale PostgreSQL database:
+    - dataSource.url='url'
+    - dataSource.username='brukernavn'
+    - dataSource.password='passord'
 
+4. Programmet kan nå eksekveres og leser automatisk verdiene fra pgr203.properties så fremt det ligger i samme filmappe.
+    - Skriv kommandoen: 'java -jar '*filnavn-på-JAR*'' i terminalen for å eksekvere den pakkede JAR filen og starte serveren.
+ 
+### Bruke Programmet
+Ettersom jeg har fokusert lite på brukervennlighet er programmet nokså enkelt å navigere.
+- Trykk på "Add new project member" -> Her kan man legge til nye brukere med fornavn, etternavn og epost.
+    - Disse blir dekodet til utf-8 i programmet og håndterer derfor norske tegn og symbolder på korrekt måte før det lagres i databasen.
+- Trykk på "Add new task" for å legge til oppgave med navn, beskrivelse og initiell status.
+- Trykk på "List tasks" for å få en liste over alle oppgavene i databasen. Disse viser også oppdatert status og medlemmene som er tildelt oppgaven.
+    - Det er på denne siden mulig å filtrere oppgaver på medlem og status. Nedtrekksmenyene er oppdatert med seneste data fra databasen.
+    - Det blir også vist en informasjonsmelding dersom det ikke finnes treff på filtreringen.
+- Trykk på "Update Task" for å oppdatere status på en valgfri oppgave.
+- Trykk på "Assign task to member" for å tildele en oppgave til et medlem. Begge nedtrekksmenyer er oppdatert med data fra databasen.
+### Programdesign
+Programmet oppfyller alle kravene spesifisert som minstekrav i oppgaven. Programmet gir en detaljert logg over requests, nye tilkoblinger og feil/infomeldinger forbundet med programmet.
+Jeg har også gjort noen av tilleggskravene og vil liste disse under.
+- Håndtering av request target blir gjort og brukeren vil få dynamiske error meldinger rendret som HTML. Håndterer blant annet
+Feil i URL - F.eks localhost:8080/index.ht (Gir statuskode 404 og knapp for redirect til hovedside).
+Dersom man prøver å tildele en oppgave til et medlem som allerede er tildelt oppgaven (Gir statuskode 422 unprocessable entity og informerer brukeren om dette)
 
+- UML diagram for hver klasse i tillegg til datamodell for hvordan flyten av data gjennomføres i programmet. (Finnes i mappe "Dokumentasjon")
+
+- Har til dels klart 
 <!-- evaluering -->
 ## Refleksjoner rundt prosjektet

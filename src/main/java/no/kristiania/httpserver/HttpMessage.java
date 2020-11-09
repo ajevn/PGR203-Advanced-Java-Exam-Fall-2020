@@ -64,10 +64,6 @@ public class HttpMessage {
         return startLine;
     }
 
-    public void setStartLine(String startLine) {
-        this.startLine = startLine;
-    }
-
     public Map<String, String> getHeaders() {
         return headers;
     }
