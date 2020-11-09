@@ -16,7 +16,7 @@
 ## Om Prosjektet
 * Andreas Jevnaker - kandidatnummer 10086
 
-Dette prosjektet setter opp en lokal webserver der brukeren kan utføre handlinger mot serveren gjennom klient funksjonalitet i programmet. Serveren demonstrerer hvordan server og klient-siden snakker med hverandre via forskjellige typer requests, herunder Post og Get forespørsler som følger RFC7230 HTTP standard. (https://tools.ietf.org/html/rfc7231). Prosjektet benytter PostgreSQL som databaseløsning. Funksjonaliteten for dette er bygget inn i programmet og gjennom JDBC(Java Database Connectivity) i egne DAO(Data Access Object) kan programmet gjennom bruk av kontrollere lagre, hente og filtrere data basert på forespørsler fra klientet. 
+Dette prosjektet setter opp en lokal webserver der brukeren kan utføre handlinger mot serveren gjennom klient funksjonalitet i programmet. Serveren demonstrerer hvordan server og klient-siden snakker med hverandre via forskjellige typer requests, herunder Post og Get forespørsler som følger RFC7230 HTTP standard. (https://tools.ietf.org/html/rfc7231). Prosjektet benytter PostgreSQL som databaseløsning. Funksjonaliteten for dette er bygget inn i programmet og gjennom JDBC(Java Database Connectivity) i egne DAO(Data Access Object). Programmet kan gjennom bruk av kontrollere lagre, hente og filtrere data basert på forespørsler fra klientet. 
 
 Prosjektet leverer et enkelt system for håndtering av prosjektoppgaver og man kan legge til ansatte, oppgaver og oppgavestatus. Det er mulig å tilegne ansatte til oppgaver og man kan endre oppgavestatus underveis. Prosjektet er laget med minimalt fokus på brukervennlighet da dette ikke var prioritert i oppgaveteksten.
 
