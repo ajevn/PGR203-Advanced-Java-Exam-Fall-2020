@@ -1,8 +1,8 @@
 package no.kristiania.controllers;
 
 import no.kristiania.database.*;
-import no.kristiania.httpserver.HttpMessage;
-import no.kristiania.httpserver.HttpResponse;
+import no.kristiania.httpserver.messages.HttpMessage;
+import no.kristiania.httpserver.messages.HttpResponse;
 import no.kristiania.httpserver.QueryString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class ProjectTaskController implements HttpController {
         String requestTarget = requestLine.split(" ")[1];
         int questionPos = requestTarget.indexOf('?');
 
-        //If request is of method POST - Create new task
+        //If request is of method POST - Create new task and adds it to the database
         if (requestMethod.equals("POST")) {
             QueryString requestParameter = new QueryString(request.getBody());
 
@@ -99,6 +99,7 @@ public class ProjectTaskController implements HttpController {
         response.write(clientSocket);
     }
 
+    // Method for appending assigned members to specific task
     public String listAssignedMembers(ProjectTask projectTask, String body) throws SQLException {
         int taskId = projectTask.getId();
         // Retrieves list of member-task associations relevant to this taskId

@@ -1,7 +1,5 @@
 package no.kristiania.httpserver;
 
-import no.kristiania.controllers.CreateMemberTaskController;
-import no.kristiania.database.MemberTask;
 import no.kristiania.database.ProjectTaskDao;
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
@@ -11,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.sql.SQLException;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;

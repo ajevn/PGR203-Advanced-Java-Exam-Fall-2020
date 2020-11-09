@@ -1,5 +1,7 @@
 package no.kristiania.httpserver;
 
+import no.kristiania.httpserver.messages.HttpMessage;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.util.HashMap;
@@ -30,13 +32,11 @@ public class HttpClient {
         }
 
         HttpMessage response = new HttpMessage(socket);
-
         String responseLine = response.getStartLine();
         responseHeaders = response.getHeaders();
         responseBody = response.getBody();
 
         String[] responseLineParts = responseLine.split(" ");
-
         statusCode = Integer.parseInt(responseLineParts[1]);
     }
 

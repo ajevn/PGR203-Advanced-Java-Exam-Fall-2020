@@ -5,7 +5,6 @@ public class MemberTask {
     private int taskId;
 
     public MemberTask() {
-
     }
 
     public MemberTask(int memberId, int taskId) {

@@ -1,10 +1,8 @@
 package no.kristiania.database;
 
-import no.kristiania.controllers.ProjectMemberOptionsController;
 import no.kristiania.controllers.ProjectTaskOptionsController;
 import no.kristiania.controllers.UpdateTaskController;
-import no.kristiania.httpserver.HttpMessage;
-import no.kristiania.httpserver.HttpResponse;
+import no.kristiania.httpserver.messages.HttpResponse;
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.BeforeEach;

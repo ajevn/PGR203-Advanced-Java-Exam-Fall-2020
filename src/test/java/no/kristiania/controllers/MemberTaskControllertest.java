@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CreateMemberTaskControllertest {
+public class MemberTaskControllertest {
     MemberTaskDao memberTaskDao;
     ProjectMemberDao projectMemberDao;
 
@@ -33,9 +33,9 @@ public class CreateMemberTaskControllertest {
         MemberTask member2 = new MemberTask(1, 2);
         memberTaskDao.insert(member1);
 
-        CreateMemberTaskController createMemberTaskController = new CreateMemberTaskController(memberTaskDao, projectMemberDao);
+        MemberTaskController memberTaskController = new MemberTaskController(memberTaskDao, projectMemberDao);
 
-        boolean exists = createMemberTaskController.checkIfAssignmentExists(member2.getMemberId(), member2.getTaskId());
+        boolean exists = memberTaskController.checkIfAssignmentExists(member2.getMemberId(), member2.getTaskId());
         assertThat(exists).isTrue();
 
     }

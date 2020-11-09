@@ -2,8 +2,8 @@ package no.kristiania.controllers;
 
 import no.kristiania.database.ProjectMember;
 import no.kristiania.database.ProjectMemberDao;
-import no.kristiania.httpserver.HttpMessage;
-import no.kristiania.httpserver.HttpResponse;
+import no.kristiania.httpserver.messages.HttpMessage;
+import no.kristiania.httpserver.messages.HttpResponse;
 import no.kristiania.httpserver.QueryString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class ProjectMemberController implements HttpController {
         System.out.println("REQUEST " + requestLine);
         //POST
         String requestMethod = requestLine.split(" ")[0];
-        //If request is of method POST - run post method
+        //If request is of method POST - adds member to database through ProjectMemberDAO
         if (requestMethod.equals("POST")) {
             QueryString requestParameter = new QueryString(request.getBody());
 
@@ -47,7 +47,7 @@ public class ProjectMemberController implements HttpController {
             return;
         }
 
-        // Else if request method is of type GET - Run get method
+        // Else if request method is of type GET - Returns a list of all members in database
         List<ProjectMember> memberList = projectMemberDao.list();
         String body = "<ul>";
         for (ProjectMember member : memberList) {

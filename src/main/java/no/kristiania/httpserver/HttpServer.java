@@ -1,10 +1,12 @@
 package no.kristiania.httpserver;
 
 import no.kristiania.controllers.*;
-import no.kristiania.database.HttpErrorMessage;
 import no.kristiania.database.MemberTaskDao;
 import no.kristiania.database.ProjectMemberDao;
 import no.kristiania.database.ProjectTaskDao;
+import no.kristiania.httpserver.messages.HttpErrorMessage;
+import no.kristiania.httpserver.messages.HttpMessage;
+import no.kristiania.httpserver.messages.HttpResponse;
 import org.flywaydb.core.Flyway;
 import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
@@ -27,14 +29,14 @@ public class HttpServer {
         ProjectTaskDao projectTaskDao = new ProjectTaskDao(dataSource);
         MemberTaskDao memberTaskDao = new MemberTaskDao(dataSource);
 
-
+        // Map of controllers serving request the appropriate controller.
         controllers = Map.of(
                 "/api/tasks", new ProjectTaskController(projectTaskDao, memberTaskDao, projectMemberDao),
                 "/api/newTask", new ProjectTaskController(projectTaskDao, memberTaskDao, projectMemberDao),
                 "/api/updateTask", new UpdateTaskController(projectTaskDao),
                 "/api/members", new ProjectMemberController(projectMemberDao),
                 "/api/newMember", new ProjectMemberController(projectMemberDao),
-                "/api/newMemberTask", new CreateMemberTaskController(memberTaskDao, projectMemberDao),
+                "/api/newMemberTask", new MemberTaskController(memberTaskDao, projectMemberDao),
                 "/api/taskOptions", new ProjectTaskOptionsController(projectTaskDao),
                 "/api/memberOptions", new ProjectMemberOptionsController(projectMemberDao),
                 "/echo", new EchoRequestController()
@@ -52,6 +54,7 @@ public class HttpServer {
         }).start();
     }
 
+    // Method for handling the request from clientSocket.
     private void handleRequest(Socket clientSocket) throws IOException, SQLException {
         HttpMessage request = new HttpMessage(clientSocket);
         String requestLine = request.getStartLine();
@@ -61,6 +64,7 @@ public class HttpServer {
         int questionPos = requestTarget.indexOf('?');
         String requestPath = questionPos != -1 ? requestTarget.substring(0, questionPos) : requestTarget;
 
+        // Serves request the appropriate controller - If requestPath is not included in controllers Map it is directed to handleFileRequest
         HttpController controller = controllers.get(requestPath);
         if (controller != null) {
             controller.handle(request, clientSocket);
@@ -69,6 +73,7 @@ public class HttpServer {
         }
     }
 
+    // Serves file depending on inputStream. Serves custom 404 error page if no file is found.
     private void handleFileRequest(Socket clientSocket, String requestPath) throws IOException {
         try (InputStream inputStream = getClass().getResourceAsStream(requestPath)) {
             if (inputStream == null) {
@@ -101,6 +106,8 @@ public class HttpServer {
         }
     }
 
+    //Main method responsible for initially running program.
+    // Validating properties file so it works with user's PostgreSQL database.
     public static void main(String[] args) throws IOException {
         //Loading pgr203.properties file and ensuring that file exists and that required property keys exists and has a value
         Properties properties = new Properties();
@@ -118,6 +125,7 @@ public class HttpServer {
             logger.warn("Properties file does not exist - " + e.getMessage());
         }
 
+        //Configuring and setting up database and creates SQL tables using Flyway
         PGSimpleDataSource dataSource = new PGSimpleDataSource();
         dataSource.setUrl(properties.getProperty("dataSource.url"));
         dataSource.setUser(properties.getProperty("dataSource.username"));
@@ -128,5 +136,4 @@ public class HttpServer {
         HttpServer server = new HttpServer(8080, dataSource);
         logger.info("Started on http://localhost:{}/index.html", 8080);
     }
-
 }
