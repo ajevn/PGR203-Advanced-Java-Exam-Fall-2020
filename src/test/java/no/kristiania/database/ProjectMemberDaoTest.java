@@ -1,5 +1,6 @@
 package no.kristiania.database;
 
+import no.kristiania.controllers.ProjectMemberOptionsController;
 import org.flywaydb.core.Flyway;
 import org.h2.jdbcx.JdbcDataSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,7 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ProjectMemberDaoTest {
 
-    private Random random = new Random();
+    private final Random random = new Random();
     private ProjectMemberDao memberDao;
 
     @BeforeEach
@@ -48,6 +49,25 @@ class ProjectMemberDaoTest {
 
         assertThat(memberDao.retrieve(member1.getId()).getId())
                 .isEqualTo(member1.getId());
+    }
+
+    @Test
+    void shouldReturnMembersAsOptions() throws SQLException {
+        ProjectMemberOptionsController controller = new ProjectMemberOptionsController(memberDao);
+        ProjectMember member = exampleMember();
+        memberDao.insert(member);
+
+        assertThat(controller.getBody())
+
+                .contains("<option value=" + member.getId() + ">" + member.getFirstName() + ", " + member.getLastName() + "</option>");
+    }
+
+    private ProjectMember exampleMember() {
+        ProjectMember member = new ProjectMember();
+        member.setFirstName(exampleName());
+        member.setLastName(exampleName());
+        member.setEmail("test@email.no");
+        return member;
     }
 
     private String exampleName() {

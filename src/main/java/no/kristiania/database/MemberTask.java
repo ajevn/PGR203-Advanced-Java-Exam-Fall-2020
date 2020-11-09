@@ -4,9 +4,10 @@ public class MemberTask {
     private int memberId;
     private int taskId;
 
-    public MemberTask(){
+    public MemberTask() {
 
     }
+
     public MemberTask(int memberId, int taskId) {
         this.memberId = memberId;
         this.taskId = taskId;

@@ -1,10 +1,8 @@
 package no.kristiania.controllers;
 
-import no.kristiania.database.MemberTask;
-import no.kristiania.database.MemberTaskDao;
-import no.kristiania.database.ProjectMember;
-import no.kristiania.database.ProjectMemberDao;
+import no.kristiania.database.*;
 import no.kristiania.httpserver.HttpMessage;
+import no.kristiania.httpserver.HttpResponse;
 import no.kristiania.httpserver.QueryString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +14,8 @@ import java.util.List;
 
 public class CreateMemberTaskController implements HttpController {
     private static final Logger logger = LoggerFactory.getLogger(CreateMemberTaskController.class);
-    private static final String CONNECTION_CLOSE = "Connection: close\r\n";;
-    private MemberTaskDao memberTaskDao;
-    private ProjectMemberDao projectMemberDao;
+    private final MemberTaskDao memberTaskDao;
+    private final ProjectMemberDao projectMemberDao;
 
     public CreateMemberTaskController(MemberTaskDao memberTaskDao, ProjectMemberDao projectMemberDao) {
         this.memberTaskDao = memberTaskDao;
@@ -35,36 +32,30 @@ public class CreateMemberTaskController implements HttpController {
 
         memberId = projectMember.getId();
 
-        if (checkIfAssignmentExists(memberId, taskId)){
+        if (checkIfAssignmentExists(memberId, taskId)) {
             logger.warn("Member" + memberId + " already assigned to task " + taskId + ".");
         } else {
             MemberTask memberTask = new MemberTask(memberId, taskId);
             memberTaskDao.insert(memberTask);
 
-            String response = "HTTP/1.1 302 REDIRECT\r\n" +
-                    CONNECTION_CLOSE +
-                    "Location: /index.html" +
-                    "\r\n";
+            HttpResponse response = new HttpResponse("302 Redirect");
+            response.redirect("index.html");
+            response.write(clientSocket);
 
-            clientSocket.getOutputStream().write(response.getBytes());
             return;
         }
 
-        String body = "ERROR 422 Unprocessable Entity - Member Already Assigned to Task";
-        String response = "HTTP/1.1 422 Unprocessable Entity\r\n" +
-                "Content-Length: " + body.length() + "\r\n" +
-                CONNECTION_CLOSE +
-                "\r\n" +
-                body;
-
-        clientSocket.getOutputStream().write(response.getBytes());
-        return;
+        HttpErrorMessage errorMessage = new HttpErrorMessage(422, "Unprocessable Entity", "Member Already Assigned to this Task");
+        String body = errorMessage.getInfoMessage();
+        HttpResponse response = new HttpResponse("422 Unprocessable Entity", body);
+        response.write(clientSocket);
     }
+
     private boolean checkIfAssignmentExists(Integer memberId, Integer taskId) throws SQLException {
         List<MemberTask> taskList = memberTaskDao.list();
 
-        for (MemberTask task : taskList){
-            if(task.getTaskId() == taskId && task.getMemberId() == memberId) {
+        for (MemberTask task : taskList) {
+            if (task.getTaskId() == taskId && task.getMemberId() == memberId) {
                 return true;
             }
         }

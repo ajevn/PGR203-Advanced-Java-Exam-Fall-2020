@@ -3,13 +3,14 @@ package no.kristiania.controllers;
 import no.kristiania.database.ProjectMember;
 import no.kristiania.database.ProjectMemberDao;
 import no.kristiania.httpserver.HttpMessage;
+import no.kristiania.httpserver.HttpResponse;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 
-public class ProjectMemberOptionsController implements HttpController{
-    private ProjectMemberDao memberDao;
+public class ProjectMemberOptionsController implements HttpController {
+    private final ProjectMemberDao memberDao;
 
     public ProjectMemberOptionsController(ProjectMemberDao memberDao) {
         this.memberDao = memberDao;
@@ -17,7 +18,7 @@ public class ProjectMemberOptionsController implements HttpController{
 
     @Override
     public void handle(HttpMessage request, Socket clientSocket) throws IOException, SQLException {
-        HttpMessage response = new HttpMessage(getBody());
+        HttpResponse response = new HttpResponse("200 Ok", getBody());
         response.write(clientSocket);
     }
 

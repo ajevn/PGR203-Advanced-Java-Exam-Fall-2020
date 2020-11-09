@@ -3,6 +3,7 @@ package no.kristiania.httpserver;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,19 +24,6 @@ public class HttpMessage {
         }
     }
 
-    public HttpMessage(String body){
-        startLine = "HTTP/1.1 200 OK";
-        headers = new HashMap<>();
-        headers.put("Content-Length", String.valueOf(body.length()));
-        headers.put("Connection", "close");
-        this.body = body;
-    }
-
-    public HttpMessage() {
-        headers = new HashMap<>();
-        this.body = null;
-    }
-
     public static String readLine(Socket socket) throws IOException {
         StringBuilder line = new StringBuilder();
         int c;
@@ -44,7 +32,7 @@ public class HttpMessage {
                 socket.getInputStream().read();
                 break;
             }
-            line.append((char)c);
+            line.append((char) c);
         }
         return line.toString();
     }
@@ -54,7 +42,7 @@ public class HttpMessage {
         for (int i = 0; i < contentLength; i++) {
             body.append((char) socket.getInputStream().read());
         }
-        String bodyDecoded = URLDecoder.decode(body.toString(), "UTF-8");
+        String bodyDecoded = URLDecoder.decode(body.toString(), StandardCharsets.UTF_8);
         return bodyDecoded;
     }
 
@@ -64,22 +52,11 @@ public class HttpMessage {
         while (!(headerLine = readLine(socket)).isEmpty()) {
             int colonPos = headerLine.indexOf(':');
             String headerName = headerLine.substring(0, colonPos);
-            String headerValue = headerLine.substring(colonPos+1).trim();
+            String headerValue = headerLine.substring(colonPos + 1).trim();
 
             headers.put(headerName, headerValue);
         }
         return headers;
-    }
-
-    public void write(Socket clientSocket) throws IOException {
-        clientSocket.getOutputStream().write((startLine + "\r\n").getBytes());
-        for (String headerName : headers.keySet()) {
-            clientSocket.getOutputStream().write((headerName + ": " + headers.get(headerName) + "\r\n").getBytes());
-        }
-        clientSocket.getOutputStream().write(("\r\n").getBytes());
-        if (body != null) {
-            clientSocket.getOutputStream().write(body.getBytes());
-        }
     }
 
 

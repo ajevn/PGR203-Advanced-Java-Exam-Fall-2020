@@ -10,7 +10,7 @@ public class QueryString {
         for (String parameter : queryString.split("&")) {
             int equalsPos = parameter.indexOf('=');
             String key = parameter.substring(0, equalsPos);
-            String value = parameter.substring(equalsPos+1);
+            String value = parameter.substring(equalsPos + 1);
             this.parameters.put(key, value);
         }
     }

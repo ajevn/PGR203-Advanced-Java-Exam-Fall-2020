@@ -5,7 +5,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProjectMemberDao extends AbstractDao<ProjectMember>{
+public class ProjectMemberDao extends AbstractDao<ProjectMember> {
 
     public ProjectMemberDao(DataSource dataSource) {
         super(dataSource);
@@ -14,7 +14,7 @@ public class ProjectMemberDao extends AbstractDao<ProjectMember>{
     public void insert(ProjectMember projectMember) throws SQLException {
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement statement = connection.prepareStatement("INSERT INTO project_members (member_firstName, member_lastName, member_email)"
-                    + " VALUES(?,?,?)",
+                            + " VALUES(?,?,?)",
                     Statement.RETURN_GENERATED_KEYS)) {
                 statement.setString(1, projectMember.getFirstName());
                 statement.setString(2, projectMember.getLastName());
@@ -32,7 +32,6 @@ public class ProjectMemberDao extends AbstractDao<ProjectMember>{
     public ProjectMember retrieve(int id) throws SQLException {
         return super.retrieve(id, "SELECT * FROM project_members WHERE id = ?");
     }
-
 
 
     @Override
