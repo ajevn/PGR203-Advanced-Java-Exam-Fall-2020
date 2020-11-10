@@ -1,0 +1,116 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ProjectTaskOptionsController</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">no.kristiania.controllers</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ProjectTaskOptionsController (no.kristiania.controllers)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ProjectTaskOptionsController</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    66,7%
+  </span>
+  <span class="absValue">
+    (2/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    72,7%
+  </span>
+  <span class="absValue">
+    (8/ 11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package no.kristiania.controllers;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import no.kristiania.database.ProjectTask;
+<i>4</i>&nbsp;import no.kristiania.database.ProjectTaskDao;
+<i>5</i>&nbsp;import no.kristiania.httpserver.HttpMessage;
+<i>6</i>&nbsp;import no.kristiania.httpserver.HttpResponse;
+<i>7</i>&nbsp;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.net.Socket;
+<i>10</i>&nbsp;import java.sql.SQLException;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;public class ProjectTaskOptionsController implements HttpController {
+<i>13</i>&nbsp;    private final ProjectTaskDao taskDao;
+<i>14</i>&nbsp;
+<b class="fc"><i>15</i>&nbsp;    public ProjectTaskOptionsController(ProjectTaskDao taskDao) {</b>
+<b class="fc"><i>16</i>&nbsp;        this.taskDao = taskDao;</b>
+<b class="fc"><i>17</i>&nbsp;    }</b>
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    // Returns all tasks as &lt;option&gt; elements - Being used in drop-down list in HTML files.
+<i>20</i>&nbsp;    @Override
+<i>21</i>&nbsp;    public void handle(HttpMessage request, Socket clientSocket) throws IOException, SQLException {
+<b class="nc"><i>22</i>&nbsp;        HttpResponse response = new HttpResponse(&quot;200 Ok&quot;, getBody());</b>
+<b class="nc"><i>23</i>&nbsp;        response.write(clientSocket);</b>
+<b class="nc"><i>24</i>&nbsp;    }</b>
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    public String getBody() throws SQLException {
+<b class="fc"><i>27</i>&nbsp;        String body = &quot;&quot;;</b>
+<b class="fc"><i>28</i>&nbsp;        for (ProjectTask task : taskDao.list()) {</b>
+<b class="fc"><i>29</i>&nbsp;            body += &quot;&lt;option value=&quot; + task.getId() + &quot;&gt;&quot; + task.getName() + &quot;&lt;/option&gt;&quot;;</b>
+<b class="fc"><i>30</i>&nbsp;        }</b>
+<b class="fc"><i>31</i>&nbsp;        return body;</b>
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2020-11-09 22:34</div>
+</div>
+</body>
+</html>
