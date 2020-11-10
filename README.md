@@ -43,7 +43,7 @@ For å få prosjektet til å kjøre følg punktene under.
     - dataSource.password='passord'
 
 4. Programmet kan nå eksekveres og leser automatisk verdiene fra pgr203.properties så fremt det ligger i samme filmappe.
-    - Skriv kommandoen: 'java -jar '*filnavn-på-JAR*'' i terminalen for å eksekvere den pakkede JAR filen og starte serveren.
+    - Skriv kommandoen: 'java -jar Eksamen-Ajevn-HttpServer-1.0-SNAPSHOT.jar' i terminalen for å eksekvere den pakkede JAR filen og starte serveren.
  
 ### Bruke Programmet
 Ettersom jeg har fokusert lite på brukervennlighet er programmet nokså enkelt å navigere.
