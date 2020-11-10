@@ -63,6 +63,10 @@ Feil i URL - F.eks localhost:8080/index.ht (Gir statuskode 404 og knapp for redi
 Dersom man prøver å tildele en oppgave til et medlem som allerede er tildelt oppgaven (Gir statuskode 422 unprocessable entity og informerer brukeren om dette)
 
 - UML diagram for hver klasse i tillegg til datamodell for hvordan flyten av data gjennomføres i programmet. (Finnes i mappe "Dokumentasjon")
+[Datamodell](Dokumentasjon/Datamodell.png)
+[ControllerUML](Dokumentasjon/Controller_uml.png)
+[DataAccessObjectUML](Dokumentasjon/DataAccessObject_uml.png)
+[ServerUML](Dokumentasjon/Server_uml.png)
 
 - Har til dels klart å utvikle et rammeverk rundt HttpMessage og HttpResonse som kalles av controllere og lager dynamiske Http responser. Har også en Message klasse for generering av Error eller Info responser. Hadde tiden strukket til skulle jeg gjerne refactoret mye av koden forbundet med requester og responser og heller latt de arve fra HttpMessage som subklasser.
 
