@@ -75,6 +75,7 @@ Dersom man prøver å tildele en oppgave til et medlem som allerede er tildelt o
 - Kontrollere bruker de 3 DAO klassene ProjectMemberDao, ProjectTaskDao og MemberTaskDao effektivt. Hadde jeg hatt bedre tid ville jeg abstrahert mer av koden i de respektive DAOene inn i AbstractDao. Metoder som insert() og list() hadde ikke trengt å være egne metoder i de forskjellige DAOene men ettersom jeg var alene om oppgaven rakk jeg ikke dette.
 
 - Jeg undersøkte metoder for automatisk testdekning men ble begrenset av at CodeCov ikke fikk tilgang til Kristiania repositories. Jeg har derimot inkludert rapporter for testdekningen i mappen "Dokumentasjon".
+*[SkjermbildeTestdekning](Dokumentasjon/Testdekning 09.11 2234.png).
 
 <!-- evaluering -->
 ## Erfaringer
